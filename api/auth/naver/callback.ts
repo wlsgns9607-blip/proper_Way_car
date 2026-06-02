@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   const { code, state, error } = req.query;
 
   if (error) {
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     };
 
     res.status(200).send(\<html><body><script>if (window.opener) { window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', user: \ }, '*'); window.close(); } else { window.location.href = '/'; }</script></body></html>\);
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).send(\<script>window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error: '\' }, '*');window.close();</script>\);
   }
 }
