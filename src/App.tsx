@@ -178,7 +178,7 @@ export default function App() {
 
             // Naver Token API with AllOrigins CORS proxy
             const tokenUrl = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${clientId}&client_secret=${clientSecret}&code=${code}&state=${state}`;
-            const proxyTokenUrl = `https://corsproxy.io/?${encodeURIComponent(tokenUrl)}`;
+            const proxyTokenUrl = ``/api/naver-proxy/oauth2.0/token?grant_type=authorization_code&client_id=${clientId}&client_secret=${clientSecret}&code=${code}&state=${state}``;
             
             const tokenRes = await fetch(proxyTokenUrl);
             const tokenData = await tokenRes.json();
@@ -189,7 +189,7 @@ export default function App() {
 
             // Naver Profile API with AllOrigins CORS proxy
             const profileUrl = `https://openapi.naver.com/v1/nid/me`;
-            const proxyProfileUrl = `https://corsproxy.io/?${encodeURIComponent(profileUrl)}`;
+            const proxyProfileUrl = ``/api/naver-openapi-proxy/v1/nid/me``;
             
             const profileRes = await fetch(proxyProfileUrl, {
               headers: { Authorization: `Bearer ${tokenData.access_token}` }
@@ -271,7 +271,7 @@ export default function App() {
               code: code
             });
             
-            const proxyTokenUrl = `https://corsproxy.io/?${encodeURIComponent(tokenUrl + '?' + params.toString())}`;
+            const proxyTokenUrl = ``/api/kakao-proxy/oauth/token?${params.toString()}``;
             
             const tokenRes = await fetch(proxyTokenUrl, {
               method: 'POST',
@@ -284,7 +284,7 @@ export default function App() {
             }
 
             const profileUrl = `https://kapi.kakao.com/v2/user/me`;
-            const proxyProfileUrl = `https://corsproxy.io/?${encodeURIComponent(profileUrl)}`;
+            const proxyProfileUrl = ``/api/naver-openapi-proxy/v1/nid/me``;
             
             const profileRes = await fetch(proxyProfileUrl, {
               headers: { Authorization: `Bearer ${tokenData.access_token}` }
@@ -2899,5 +2899,6 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
+
 
 
