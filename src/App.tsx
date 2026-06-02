@@ -1031,17 +1031,20 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
 
   const handleNaverLogin = async () => {
     if (loading) return;
-
-    setLoading(true);
     try {
-      const res = await fetch('/api/auth/naver/url');
-      
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "네이버 로그인 초기화에 실패했습니다.");
+      const clientId = import.meta.env.VITE_NAVER_CLIENT_ID;
+      if (!clientId) {
+        alert("네이버 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_NAVER_CLIENT_ID를 설정해주세요.");
+        return;
       }
       
-      const { url } = data;
+      const protocol = window.location.protocol;
+      const host = window.location.host;
+      const redirectUri = `${protocol}//${host}/api/auth/naver/callback`;
+      const state = Math.random().toString(36).substring(7);
+      
+      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+
       console.log("[Auth] Opening Naver login popup:", url);
       
       const width = 600;
@@ -1052,29 +1055,25 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       window.open(url, 'naver_oauth_popup', `width=${width},height=${height},left=${left},top=${top}`);
     } catch (err: any) {
       console.error("[Auth] Naver URL error:", err);
-      if (err.message.includes("설정되지 않았습니다")) {
-        alert("네이버 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_NAVER_CLIENT_ID와 NAVER_CLIENT_SECRET을 설정해주세요.");
-      } else {
-        alert("네이버 로그인 실패: " + err.message);
-      }
-    } finally {
-      setLoading(false);
+      alert("네이버 로그인 초기화에 실패했습니다: " + err.message);
     }
   };
 
   const handleKakaoLogin = async () => {
     if (loading) return;
-
-    setLoading(true);
     try {
-      const res = await fetch('/api/auth/kakao/url');
-      
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "카카오 로그인 초기화에 실패했습니다.");
+      const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY;
+      if (!clientId) {
+        alert("카카오 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_KAKAO_CLIENT_ID를 설정해주세요.");
+        return;
       }
       
-      const { url } = data;
+      const protocol = window.location.protocol;
+      const host = window.location.host;
+      const redirectUri = `${protocol}//${host}/api/auth/kakao/callback`;
+      
+      const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
       console.log("[Auth] Opening Kakao login popup:", url);
       
       const width = 600;
@@ -1085,13 +1084,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       window.open(url, 'kakao_oauth_popup', `width=${width},height=${height},left=${left},top=${top}`);
     } catch (err: any) {
       console.error("[Auth] Kakao URL error:", err);
-      if (err.message.includes("설정되지 않았습니다")) {
-        alert("카카오 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_KAKAO_CLIENT_ID와 KAKAO_CLIENT_SECRET을 설정해주세요.");
-      } else {
-        alert("카카오 로그인 실패: " + err.message);
-      }
-    } finally {
-      setLoading(false);
+      alert("카카오 로그인 초기화에 실패했습니다: " + err.message);
     }
   };
 
