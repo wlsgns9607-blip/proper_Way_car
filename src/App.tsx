@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { 
   LogIn, 
   UserPlus, 
@@ -148,6 +148,7 @@ export default function App() {
     };
   });
   const [pendingProvider, setPendingProvider] = useState<'naver' | 'kakao' | null>(null);
+  const isCallbackPath = typeof window !== 'undefined' && window.location.pathname.includes('/api/auth');
 
   useEffect(() => {
     // 100% Frontend Client-side OAuth Callback Handling
@@ -434,6 +435,14 @@ export default function App() {
     }
   }, [state.view, state.user]);
 
+  if (isCallbackPath) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-white text-xl font-bold">로그인 정보를 서버와 확인 중입니다... 잠시만 기다려주세요!</div>
+      </div>
+    );
+  }
+  
   if (state.loading) {
     return (
       <div className="h-screen w-full bg-[#f8fafc] flex justify-center items-center">
@@ -2890,3 +2899,4 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
+
