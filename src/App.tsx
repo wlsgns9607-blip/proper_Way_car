@@ -150,6 +150,93 @@ export default function App() {
   const [pendingProvider, setPendingProvider] = useState<'naver' | 'kakao' | null>(null);
 
   useEffect(() => {
+    // 100% Frontend Client-side OAuth Callback Handling
+    if (typeof window !== 'undefined' && window.location.pathname.includes('/api/auth/naver/callback')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const state = urlParams.get('state');
+      const error = urlParams.get('error');
+
+      if (error) {
+        if (window.opener) {
+          window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error }, '*');
+          window.close();
+        }
+        return;
+      }
+
+      if (code && state) {
+        const processNaverLogin = async () => {
+          try {
+            const clientId = import.meta.env.VITE_NAVER_CLIENT_ID;
+            const clientSecret = import.meta.env.VITE_NAVER_CLIENT_SECRET || import.meta.env.NAVER_CLIENT_SECRET;
+            
+            if (!clientId || !clientSecret) {
+              throw new Error("클라이언트 ID 또는 Secret이 없습니다. 환경변수 설정을 확인하세요.");
+            }
+
+            // Naver Token API with AllOrigins CORS proxy
+            const tokenUrl = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${clientId}&client_secret=${clientSecret}&code=${code}&state=${state}`;
+            const proxyTokenUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(tokenUrl)}`;
+            
+            const tokenRes = await fetch(proxyTokenUrl);
+            const tokenData = await tokenRes.json();
+            
+            if (tokenData.error) {
+              throw new Error(tokenData.error_description || "토큰 발급 실패");
+            }
+
+            // Naver Profile API with AllOrigins CORS proxy
+            const profileUrl = `https://openapi.naver.com/v1/nid/me`;
+            const proxyProfileUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(profileUrl)}`;
+            
+            const profileRes = await fetch(proxyProfileUrl, {
+              headers: { Authorization: `Bearer ${tokenData.access_token}` }
+            });
+            const profileData = await profileRes.json();
+
+            if (profileData.resultcode !== '00') {
+              throw new Error(profileData.message || "프로필 조회 실패");
+            }
+
+            const user = {
+              id: profileData.response.id,
+              email: profileData.response.email,
+              name: profileData.response.name,
+              photoURL: profileData.response.profile_image,
+              provider: 'naver'
+            };
+
+            if (window.opener) {
+              window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', user }, '*');
+              window.close();
+            } else {
+              // Popup block fallback
+              localStorage.setItem('demo_user', JSON.stringify({
+                 uid: `naver-${user.id}`,
+                 name: user.name,
+                 email: user.email,
+                 provider: 'naver',
+                 createdAt: new Date()
+              }));
+              window.location.href = '/';
+            }
+          } catch (err: any) {
+            if (window.opener) {
+               window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error: err.message }, '*');
+               window.close();
+            } else {
+               alert("네이버 로그인 에러: " + err.message);
+               window.location.href = '/';
+            }
+          }
+        };
+        processNaverLogin();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     // Check firestore availability with a timeout
     const checkConnection = async () => {
       if (!db) {
