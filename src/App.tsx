@@ -91,7 +91,7 @@ const callAI = async (contents: any[], systemInstruction: string) => {
 const speak = (text: string) => {
   if (typeof window === 'undefined') return;
   if (!window.speechSynthesis) {
-    alert("?�재 브라?��??�서 ?�성 ?�성 기능??지?�하지 ?�습?�다.");
+    alert("현재 브라우저에서 음성 합성 기능을 지원하지 않습니다.");
     return;
   }
   try {
@@ -103,7 +103,7 @@ const speak = (text: string) => {
     window.speechSynthesis.speak(msg);
   } catch (error) {
     console.error("TTS Error:", error);
-    alert("?�성 출력 �??�류가 발생?�습?�다.");
+    alert("음성 출력 중 오류가 발생했습니다.");
   }
 };
 
@@ -175,10 +175,10 @@ export default function App() {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // 1. 즉시 UI ?�데?�트 (기본 ?�보�?먼�? ?�환?�여 ?��??�간 최소??
+        // 1. 즉시 UI 업데이트 (기본 정보로 먼저 전환하여 대기 시간 최소화)
         const initialUser: UserProfile = {
           uid: firebaseUser.uid,
-          name: firebaseUser.displayName || (firebaseUser as any).name || '?�용??,
+          name: firebaseUser.displayName || (firebaseUser as any).name || '사용자',
           email: firebaseUser.email || '',
           createdAt: new Date().toISOString(),
         };
@@ -193,7 +193,7 @@ export default function App() {
           pendingModal: prev.view === 'auth' ? null : prev.pendingModal
         }));
 
-        // 2. 백그?�운?�에??Firestore ?�이???�기??(비차??
+        // 2. 백그라운드에서 Firestore 데이터 동기화 (비차단)
         if (db) {
           (async () => {
              try {
@@ -268,12 +268,12 @@ export default function App() {
           </div>
           <div className="space-y-2">
             <p className="font-black text-slate-800 text-xl tracking-tight leading-none">
-              {state.isOffline ? "?�버???�결?????�습?�다" : "?�전?�게 ?�결 중입?�다"}
+              {state.isOffline ? "서버에 연결할 수 없습니다" : "안전하게 연결 중입니다"}
             </p>
             <p className="text-slate-400 text-[13px] font-bold">
               {state.isOffline 
-                ? "?�재 ?�프?�인 모드�??�도 중입?�다. ?��? 기능???�한?????�습?�다." 
-                : "최적???�차 ?�보�?불러?�고 ?�습?�다."}
+                ? "현재 오프라인 모드로 시도 중입니다. 일부 기능이 제한될 수 있습니다." 
+                : "최적의 세차 정보를 불러오고 있습니다."}
             </p>
           </div>
           {state.isOffline && (
@@ -283,7 +283,7 @@ export default function App() {
               onClick={() => setState(prev => ({ ...prev, loading: false }))}
               className="mt-4 px-6 py-2 bg-emerald-500 text-white rounded-full font-bold text-sm shadow-lg shadow-emerald-200"
             >
-              로그???�이 ?�작?�기
+              로그인 없이 시작하기
             </motion.button>
           )}
         </div>
@@ -312,7 +312,7 @@ export default function App() {
     if (!provider) return;
     
     if (!navigator.geolocation) {
-      alert("??브라?��??�서???�치 ?�비?��? 지?�하지 ?�습?�다.");
+      alert("이 브라우저에서는 위치 서비스를 지원하지 않습니다.");
       return;
     }
 
@@ -322,10 +322,10 @@ export default function App() {
         let url = '';
         if (provider === 'naver') {
           // Modern Naver Map search URL with coordinates to center the search on user's location
-          url = `https://map.naver.com/v5/search/${encodeURIComponent('?�차??)}?c=${longitude},${latitude},15,0,0,0,dh`;
+          url = `https://map.naver.com/v5/search/${encodeURIComponent('세차장')}?c=${longitude},${latitude},15,0,0,0,dh`;
         } else {
           // Kakao Map search URL - using coordinate-based search if possible or standard link
-          url = `https://map.kakao.com/link/search/${encodeURIComponent('?�차??)}?location=${latitude},${longitude}`;
+          url = `https://map.kakao.com/link/search/${encodeURIComponent('세차장')}?location=${latitude},${longitude}`;
         }
         window.open(url, '_blank');
         setModal('none'); // Close splash when done
@@ -334,8 +334,8 @@ export default function App() {
         console.error("GPS error:", error);
         setModal('none'); // Close splash on error
         const errorMsg = error.code === 1 
-          ? "?�치 권한??거�??�었?�니?? ?�정?�서 브라?��????�치 권한???�용?�주?�요." 
-          : "?�치 ?�보�?가?�오?�데 ?�패?�습?�다. (?�류: " + error.message + ")";
+          ? "위치 권한이 거부되었습니다. 설정에서 브라우저의 위치 권한을 허용해주세요." 
+          : "위치 정보를 가져오는데 실패했습니다. (오류: " + error.message + ")";
         alert(errorMsg);
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
@@ -350,7 +350,7 @@ export default function App() {
         localStorage.setItem('demo_user', JSON.stringify(u)); // Save to localStorage to persist across refreshes
         setState(prev => ({ ...prev, user: u, view: 'home', modal: nextModal as any, pendingModal: null }));
       }} />;
-    case 'chat': return <ChatScreen user={state.user} onBack={() => setView('home')} onPhoto={() => setView('photo_upload_ai')} onPhotoSelect={(f) => setState(prev => ({...prev, view: 'photo_upload_ai', pendingPhoto: f}))} title="AI?�차?�문가?�테 물어보세??!" allowAutoAI={true} chatType="ai" onNavigateToGuide={() => setView('guide')} />;
+    case 'chat': return <ChatScreen user={state.user} onBack={() => setView('home')} onPhoto={() => setView('photo_upload_ai')} onPhotoSelect={(f) => setState(prev => ({...prev, view: 'photo_upload_ai', pendingPhoto: f}))} title="AI세차전문가한테 물어보세요!!" allowAutoAI={true} chatType="ai" onNavigateToGuide={() => setView('guide')} />;
     case 'guide_query': {
       if (!state.user && !state.loading) {
         return <AuthScreen onBack={() => setView('home')} onLogin={(u) => {
@@ -365,8 +365,8 @@ export default function App() {
           onBack={() => setView('home')} 
           onPhoto={() => setView('photo_upload_expert')} 
           onPhotoSelect={(f) => setState(prev => ({...prev, view: 'photo_upload_expert', pendingPhoto: f}))}
-          title="궁금?�신?��? 무엇?�니�?" 
-          placeholder="궁금?�것??물어 보세??!" 
+          title="궁금하신점은 무엇입니까~" 
+          placeholder="궁금한것을 물어 보세요!!" 
           allowAutoAI={false} 
           chatType="expert" 
           overrideSessionId={state.adminActiveSessionUid}
@@ -387,8 +387,8 @@ export default function App() {
         />
       );
     }
-    case 'photo_upload_ai': return <PhotoUploadScreen user={state.user} onBack={() => { setState(prev => ({...prev, pendingPhoto: null})); setView('chat'); }} title="AI ?�차 분석" chatType="ai" initialFile={state.pendingPhoto} />;
-    case 'photo_upload_expert': return <PhotoUploadScreen user={state.user} onBack={() => { setState(prev => ({...prev, pendingPhoto: null})); setView('guide_query'); }} title={state.adminActiveSessionUid ? "?�문가 ?��??�" : "?�문가???��?"} disableAI chatType="expert" overrideSessionId={state.adminActiveSessionUid} initialFile={state.pendingPhoto} />;
+    case 'photo_upload_ai': return <PhotoUploadScreen user={state.user} onBack={() => { setState(prev => ({...prev, pendingPhoto: null})); setView('chat'); }} title="AI 세차 분석" chatType="ai" initialFile={state.pendingPhoto} />;
+    case 'photo_upload_expert': return <PhotoUploadScreen user={state.user} onBack={() => { setState(prev => ({...prev, pendingPhoto: null})); setView('guide_query'); }} title={state.adminActiveSessionUid ? "전문가 답변란" : "전문가의 답변"} disableAI chatType="expert" overrideSessionId={state.adminActiveSessionUid} initialFile={state.pendingPhoto} />;
     case 'review_matrix': return <ReviewMatrix onBack={() => setView('home')} user={state.user} />;
     default: return <HomeScreen user={state.user} setView={setView} onOpenService={() => setModal('service_choice')} setState={setState} state={state} />;
   }
@@ -416,12 +416,12 @@ export default function App() {
         {!isFirebaseEnabled ? (
           <div className="bg-slate-800 text-white text-[10px] font-black py-1 px-4 text-center z-[100] flex items-center justify-center gap-2 pt-safe">
             <Target size={10} />
-            ?�모 모드 ?�행 �?(Firebase ?�정 ?��?
+            데모 모드 실행 중 (Firebase 설정 대기)
           </div>
         ) : state.isOffline ? (
           <div className="bg-orange-500 text-white text-[10px] font-black py-1 px-4 text-center z-[100] flex items-center justify-center gap-2 pt-safe">
             <RefreshCw size={10} className="animate-spin" />
-            ?�시�??�이???�동 지??(?�프?�인 모드)
+            실시간 데이터 연동 지연 (오프라인 모드)
           </div>
         ) : null}
 
@@ -455,14 +455,14 @@ export default function App() {
           ` }} />
           <NavTab 
             icon={state.view === 'chat' ? <UserCog size={28} className="text-slate-900" /> : <Sparkles size={28} className="text-slate-500" />} 
-            label={state.view === 'chat' ? "?�문가" : "AI?�차박사"} 
+            label={state.view === 'chat' ? "전문가" : "AI세차박사"} 
             active={state.view === 'chat'} 
             onClick={() => state.view === 'chat' ? setView('guide') : setView('chat')} 
           />
           <NavTab icon={<Home size={34} strokeWidth={2.5} className={(state.view as string) === 'home' ? 'text-slate-900' : 'text-slate-500'} />} label="Home" active={(state.view as string) === 'home'} onClick={() => setView('home')} />
           <NavTab 
             icon={state.view === 'guide_query' ? <UserCog size={28} className="text-slate-900" /> : <MessageCircle size={28} className="text-slate-500" />} 
-            label={state.view === 'guide_query' ? "?�무?�의 ?�하?? : "궁금?�신??} 
+            label={state.view === 'guide_query' ? "실무자의 노하우" : "궁금하신점"} 
             active={(state.view as string) === 'guide_query'} 
             onClick={() => state.view === 'guide_query' ? setView('guide') : setView('guide_query')} 
           />
@@ -485,20 +485,20 @@ export default function App() {
                 className="bg-white w-full rounded-2xl p-6 relative z-10 flex flex-col gap-4 shadow-2xl"
               >
                 <div className="flex flex-col text-center gap-1 mb-2">
-                  <h3 className="font-bold text-slate-800 text-lg">?�차 ?�비?��? ?�택?�주?�요</h3>
-                  <p className="text-slate-500 text-xs text-center">주�? ?�차?�을 검?�할 ?�을 ?�택?�니??</p>
+                  <h3 className="font-bold text-slate-800 text-lg">세차 서비스를 선택해주세요</h3>
+                  <p className="text-slate-500 text-xs text-center">주변 세차장을 검색할 앱을 선택합니다.</p>
                 </div>
                 <button 
                   onClick={() => findNearbyCarWash('naver')}
                   className="bg-[#03C75A] text-white py-4 rounded-xl flex items-center justify-center gap-3 font-bold shadow-lg active:scale-95 transition-transform"
                 >
-                  ?�이�?지?�로 찾기
+                  네이버 지도로 찾기
                 </button>
                 <button 
                   onClick={() => findNearbyCarWash('kakao')}
                   className="bg-[#FEE500] text-[#3c1e1e] py-4 rounded-xl flex items-center justify-center gap-3 font-bold shadow-lg active:scale-95 transition-transform"
                 >
-                  카카?�맵?�로 찾기
+                  카카오맵으로 찾기
                 </button>
                 <button 
                   onClick={() => setModal('none')}
@@ -536,7 +536,7 @@ export default function App() {
                    </div>
 
                    <p className="text-[15px] font-medium text-slate-700 text-center leading-relaxed mb-10 whitespace-pre-line">
-                      ???�치�?기반?�로{"\n"}가까운 ?�차?�을 찾아?�릴까요?
+                      현 위치를 기반으로{"\n"}가까운 세차장을 찾아드릴까요?
                    </p>
 
                    <div className="w-full flex justify-end">
@@ -568,7 +568,7 @@ export default function App() {
               onClose={() => setModal('none')} 
               onSave={(updatedUser) => {
                 setState(prev => ({ ...prev, user: updatedUser, modal: 'login_success' }));
-                alert("차량 ?�보가 ?�?�되?�습?�다! AI가 ?��? 바탕?�로 ?��????�릴게요.");
+                alert("차량 정보가 저장되었습니다! AI가 이를 바탕으로 답변해 드릴게요.");
               }}
               onAuthRequired={() => {
                  setState(prev => ({ ...prev, modal: 'none', view: 'auth', pendingModal: 'vehicle_config' }));
@@ -610,11 +610,11 @@ export default function App() {
                   </div>
 
                   <h3 className="text-[22px] font-black text-slate-800 leading-tight mb-6">
-                     로그?�웃???�료??br/>?�습?�다
+                     로그아웃이 완료되<br/>었습니다
                   </h3>
 
                   <p className="text-[14px] font-bold text-[#8c746b] leading-relaxed mb-10">
-                     ?�전?�게 로그?�웃?�었?�니<br/>??<br/>?�음????만나??
+                     안전하게 로그아웃되었습니<br/>다.<br/>다음에 또 만나요!
                   </p>
 
                   <button 
@@ -628,7 +628,7 @@ export default function App() {
                           className="w-2.5 h-1.5 border-b-[3px] border-l-[3px] border-[#1ea08a] -rotate-45 -translate-y-0.5"
                         />
                      </div>
-                     <span>?�인</span>
+                     <span>확인</span>
                   </button>
                </motion.div>
             </div>
@@ -667,19 +667,19 @@ export default function App() {
                   </div>
 
                   <h3 className="text-[22px] font-semibold tracking-tight text-[#1a202c] mb-4">
-                     로그???�료
+                     로그인 완료
                   </h3>
 
                   <p className="text-[14px] text-slate-500 font-medium leading-snug mb-10 text-center">
-                     로그?�이 ?�료?�었?�니??<br/>
-                     ?�차???�석�??�께??주셔??감사?�니??
+                     로그인이 완료되었습니다.<br/>
+                     세차의 정석과 함께해 주셔서 감사합니다.
                   </p>
 
                   <button 
                     onClick={() => setModal('none')}
                     className="w-full bg-black py-4 rounded-xl flex items-center justify-center gap-2 text-white font-medium text-[16px] active:scale-95 transition-all mb-8 shadow-md"
                   >
-                     <span>?�작?�기</span>
+                     <span>시작하기</span>
                      <ArrowRight size={18} strokeWidth={2} />
                   </button>
                   
@@ -720,7 +720,7 @@ function LoadingScreen() { // Replaced by SplashScreen
 function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: UserProfile | null, onClose: () => void, onSave: (u: UserProfile) => void, onAuthRequired?: () => void }) {
   const [brand, setBrand] = useState(user?.carModel?.split(' ')[0] || '');
   const [model, setModel] = useState(user?.carModel?.split(' ').slice(1).join(' ') || '');
-  const [size, setSize] = useState(user?.carSize || '?�용�?);
+  const [size, setSize] = useState(user?.carSize || '승용차');
   const [photoUrl, setPhotoUrl] = useState(user?.carPhotoUrl || '');
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -729,7 +729,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert("?�진 ?�량???�무 ?�니?? (2MB ?�하 권장)");
+        alert("사진 용량이 너무 큽니다. (2MB 이하 권장)");
         return;
       }
       const reader = new FileReader();
@@ -742,7 +742,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
 
   const handleSave = async () => {
     if (!user) {
-      alert("차량 ?�정???�?�하?�면 먼�? 로그?�이 ?�요?�니??");
+      alert("차량 설정을 저장하려면 먼저 로그인이 필요합니다!");
       if (onAuthRequired) onAuthRequired();
       return;
     }
@@ -757,7 +757,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
       onSave(updatedUser);
     } catch (e) {
       console.error(e);
-      alert("?�??�??�류가 발생?�습?�다. 권한???�거???�트?�크 ?�류?????�습?�다.");
+      alert("저장 중 오류가 발생했습니다. 권한이 없거나 네트워크 오류일 수 있습니다.");
     } finally {
       setLoading(false);
     }
@@ -777,7 +777,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
         className="bg-[#C1EBE9] w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 max-h-[90vh] overflow-y-auto"
       >
         <div className="p-7 pb-2 flex justify-between items-center">
-          <h3 className="text-lg font-black text-slate-800">??차량 ?�정</h3>
+          <h3 className="text-lg font-black text-slate-800">내 차량 설정</h3>
           <button onClick={onClose} className="p-2 text-slate-900 hover:text-black hover:scale-110 active:scale-95 transition-all">
             <X size={24} strokeWidth={3} />
           </button>
@@ -786,14 +786,14 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
         <div className="p-7 space-y-5">
           {/* Photo Upload Area */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 ml-1">?�의 차량 ?�진</label>
+            <label className="text-[10px] font-black text-slate-400 ml-1">나의 차량 사진</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
               className="w-full h-40 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition-all overflow-hidden relative group"
             >
               {photoUrl ? (
                 <>
-                  <img src={photoUrl} alt="차량 ?�진" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img src={photoUrl} alt="차량 사진" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Camera className="text-white" size={32} />
                   </div>
@@ -801,7 +801,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
               ) : (
                 <>
                   <Camera size={32} className="text-slate-300 mb-2" />
-                  <span className="text-[11px] font-bold text-slate-400">?�진???�록?�거??촬영?�세??/span>
+                  <span className="text-[11px] font-bold text-slate-400">사진을 등록하거나 촬영하세요</span>
                 </>
               )}
             </div>
@@ -816,20 +816,20 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 ml-1">1. 브랜??/label>
+              <label className="text-[10px] font-black text-slate-400 ml-1">1. 브랜드</label>
               <input 
                 type="text" 
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                placeholder="?? ?��?, 기아, ?�슬??
+                placeholder="예: 현대, 기아, 테슬라"
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold focus:outline-none focus:border-[#1ea08a] transition-all"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 ml-1">2. 차량 ?�기</label>
+              <label className="text-[10px] font-black text-slate-400 ml-1">2. 차량 크기</label>
               <div className="grid grid-cols-2 gap-2">
-                {['경차', '?�용�?, 'SUV', '?�??SUV'].map((s) => (
+                {['경차', '승용차', 'SUV', '대형 SUV'].map((s) => (
                   <button
                     key={s}
                     onClick={() => setSize(s)}
@@ -846,12 +846,12 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 ml-1">3. 차량 ?�름 (모델�?</label>
+              <label className="text-[10px] font-black text-slate-400 ml-1">3. 차량 이름 (모델명)</label>
               <input 
                 type="text" 
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                placeholder="?? 그랜?�, ?�렌?? 모델3"
+                placeholder="예: 그랜저, 쏘렌토, 모델3"
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold focus:outline-none focus:border-[#1ea08a] transition-all"
               />
             </div>
@@ -862,7 +862,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
             onClick={handleSave}
             className="w-full bg-[#1ea08a] text-white py-4 rounded-2xl font-black text-base shadow-lg shadow-emerald-200 active:scale-95 transition-all disabled:opacity-50"
           >
-            {loading ? "?�??�?.." : "?�정 ?�료"}
+            {loading ? "저장 중..." : "설정 완료"}
           </button>
         </div>
       </motion.div>
@@ -930,9 +930,9 @@ function SplashScreen({ onDismiss }: { onDismiss?: () => void }) {
       </div>
 
       <div className="flex flex-col items-center gap-4 text-center max-w-[280px]">
-        <h2 className="text-[#1a3a5f] font-black text-2xl tracking-tight">??주�? ?�차?�을 찾는 �?..</h2>
+        <h2 className="text-[#1a3a5f] font-black text-2xl tracking-tight">내 주변 세차장을 찾는 중...</h2>
         <p className="text-slate-400 text-[13px] font-medium leading-relaxed">
-          가??깨끗?�고 가까운 ?�차 ?�설??br/>?�색?�고 ?�습?�다.
+          가장 깨끗하고 가까운 세차 시설을<br/>탐색하고 있습니다.
         </p>
       </div>
 
@@ -945,7 +945,7 @@ function SplashScreen({ onDismiss }: { onDismiss?: () => void }) {
             />
          </div>
          <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
-            <span>?�시�??�치 ?�인</span>
+            <span>실시간 위치 확인</span>
             <span className="text-blue-500">{Math.floor(progress)}%</span>
          </div>
       </div>
@@ -985,7 +985,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
     if (loading) return;
     
     if (!isFirebaseEnabled) {
-      alert("Firebase가 ?�정?��? ?�았?�니?? ???�정?�서 Firebase ?�경 변?��? ?�력?�거??Firebase ?�정???�료?�주?�요.");
+      alert("Firebase가 설정되지 않았습니다. 앱 설정에서 Firebase 환경 변수를 입력하거나 Firebase 설정을 완료해주세요.");
       return;
     }
 
@@ -1000,11 +1000,11 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       
       console.log("[Auth] Firebase Google Login Success:", user.email);
       
-      // 즉시 onLogin ?�출?�여 부�?컴포?�트???�태 ?�이 ?�도
+      // 즉시 onLogin 호출하여 부모 컴포넌트의 상태 전이 유도
       if (onLogin) {
         onLogin({
           uid: user.uid,
-          name: user.displayName || '?�용??,
+          name: user.displayName || '사용자',
           email: user.email || '',
           photoURL: user.photoURL || undefined,
           provider: 'google',
@@ -1013,16 +1013,16 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       }
     } catch (error: any) {
       if (error.code === 'auth/popup-blocked') {
-        alert("?�업??차단?�었?�니?? 브라?��? ?�정?�서 ?�업???�용?�주?�요.");
+        alert("팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용해주세요.");
       } else if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
         console.log("[Auth] Popup closed by user");
       } else if (error.code === 'auth/operation-not-allowed') {
-        alert("구�? 로그?�이 ?�성?�되지 ?�았?�니?? Firebase 콘솔?�서 Google ?�증???�성?�해???�니??");
+        alert("구글 로그인이 활성화되지 않았습니다. Firebase 콘솔에서 Google 인증을 활성화해야 합니다.");
       } else if (error.code === 'auth/unauthorized-domain') {
-        alert("???�메?��? ?�인???�메?�이 ?�닙?�다. Firebase 콘솔?�서 ?�재 ?�메?�을 ?�인???�메?�에 추�??�야 ?�니??");
+        alert("이 도메인은 승인된 도메인이 아닙니다. Firebase 콘솔에서 현재 도메인을 승인된 도메인에 추가해야 합니다.");
       } else {
         console.error("Firebase Google login error:", error.code, error.message);
-        alert(`구�? 로그???�패: ${error.message} (${error.code})`);
+        alert(`구글 로그인 실패: ${error.message} (${error.code})`);
       }
     } finally {
       setLoading(false);
@@ -1030,30 +1030,35 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
   };
 
   const handleNaverLogin = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
-      const clientId = import.meta.env.VITE_NAVER_CLIENT_ID;
-      if (!clientId) {
-        alert('���̹� �α����� Ȱ��ȭ���� �ʾҽ��ϴ�.\\n�� �������� VITE_NAVER_CLIENT_ID�� �������ּ���.');
-        return;
+      const res = await fetch('/api/auth/naver/url');
+      
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "네이버 로그인 초기화에 실패했습니다.");
       }
       
-      const protocol = window.location.protocol;
-      const host = window.location.host;
-      const redirectUri = \\//\System.Management.Automation.Internal.Host.InternalHost/api/auth/naver/callback\;
-      const state = Math.random().toString(36).substring(7);
+      const { url } = data;
+      console.log("[Auth] Opening Naver login popup:", url);
       
-      const url = \https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=\&redirect_uri=\&state=\\;
-
-      const width = 500;
-      const height = 600;
-      const left = window.screenX + (window.outerWidth - width) / 2;
-      const top = window.screenY + (window.outerHeight - height) / 2;
+      const width = 600;
+      const height = 700;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
       
-      console.log('[Auth] Opening Naver login popup:', url);
-      window.open(url, 'naver_oauth_popup', \width=\,height=\,left=\,top=\\);
+      window.open(url, 'naver_oauth_popup', `width=${width},height=${height},left=${left},top=${top}`);
     } catch (err: any) {
-      console.error('[Auth] Naver URL error:', err);
-      alert('���̹� �α��� �غ� �� ������ �߻��߽��ϴ�.');
+      console.error("[Auth] Naver URL error:", err);
+      if (err.message.includes("설정되지 않았습니다")) {
+        alert("네이버 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_NAVER_CLIENT_ID와 NAVER_CLIENT_SECRET을 설정해주세요.");
+      } else {
+        alert("네이버 로그인 실패: " + err.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1066,7 +1071,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "카카??로그??초기?�에 ?�패?�습?�다.");
+        throw new Error(data.error || "카카오 로그인 초기화에 실패했습니다.");
       }
       
       const { url } = data;
@@ -1080,10 +1085,10 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       window.open(url, 'kakao_oauth_popup', `width=${width},height=${height},left=${left},top=${top}`);
     } catch (err: any) {
       console.error("[Auth] Kakao URL error:", err);
-      if (err.message.includes("?�정?��? ?�았?�니??)) {
-        alert("카카??로그?�이 ?�성?�되지 ?�았?�니??\n\n???�정(Settings) 메뉴?�서 VITE_KAKAO_CLIENT_ID?� KAKAO_CLIENT_SECRET???�정?�주?�요.");
+      if (err.message.includes("설정되지 않았습니다")) {
+        alert("카카오 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_KAKAO_CLIENT_ID와 KAKAO_CLIENT_SECRET을 설정해주세요.");
       } else {
-        alert("카카??로그???�패: " + err.message);
+        alert("카카오 로그인 실패: " + err.message);
       }
     } finally {
       setLoading(false);
@@ -1096,14 +1101,14 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
         const user = event.data.user;
         onLogin({
           uid: `${user.provider}-${user.id}`,
-          name: user.name || user.email?.split('@')[0] || '?�용??,
+          name: user.name || user.email?.split('@')[0] || '사용자',
           email: user.email || '',
           photoURL: user.photoURL,
           provider: user.provider,
           createdAt: new Date(),
         });
       } else if (event.data?.type === 'OAUTH_AUTH_ERROR') {
-        alert("?�셜 로그???�패: " + event.data.error);
+        alert("소셜 로그인 실패: " + event.data.error);
       }
     };
     window.addEventListener('message', handleMessage);
@@ -1119,7 +1124,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       setTimeout(() => {
         const demoProfile: UserProfile = {
           uid: 'demo-user',
-          name: formData.name || '?�모 ?�용??,
+          name: formData.name || '데모 사용자',
           email: formData.email,
           birthDate: formData.birthDate,
           phoneNumber: formData.phoneNumber,
@@ -1148,7 +1153,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
           createdAt: new Date().toISOString(),
         };
 
-        // UI 즉시 ?�데?�트
+        // UI 즉시 업데이트
         onLogin(profile);
 
         if (db) {
@@ -1160,7 +1165,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
           });
         }
       } catch (error: any) {
-         alert("?�원가???�패: " + error.message);
+         alert("회원가입 실패: " + error.message);
       } finally {
         setLoading(false);
       }
@@ -1170,12 +1175,12 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
         
         const fallbackProfile: UserProfile = {
           uid: result.user.uid,
-          name: result.user.displayName || '?�용??,
+          name: result.user.displayName || '사용자',
           email: result.user.email || '',
           createdAt: new Date().toISOString(),
         };
 
-        // UI 즉시 ?�데?�트
+        // UI 즉시 업데이트
         onLogin(fallbackProfile);
 
         if (db) {
@@ -1188,7 +1193,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
           });
         }
       } catch (error: any) {
-        alert("로그???�패: " + error.message);
+        alert("로그인 실패: " + error.message);
       } finally {
         setLoading(false);
       }
@@ -1210,9 +1215,9 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
 
       <div className="mb-10 mt-4">
         <h2 className="text-3xl font-black text-slate-800 whitespace-pre-line leading-snug">
-          {mode === 'login' ? '반�??�요!\n?�시 ?�아?�셨?�요' : '?�차???�석\n?�리 ?�께 ?�작?�요'}
+          {mode === 'login' ? '반가워요!\n다시 돌아오셨네요' : '세차의 정석\n우리 함께 시작해요'}
         </h2>
-        <p className="text-slate-400 text-sm mt-3 font-semibold">로그?�을 ?�하????많�? ?�비?��? 만나보세??/p>
+        <p className="text-slate-400 text-sm mt-3 font-semibold">로그인을 통하여 더 많은 서비스를 만나보세요</p>
       </div>
 
       <motion.form 
@@ -1225,15 +1230,15 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
       >
         {mode === 'signup' && (
            <AuthInput 
-             label="?�명" 
-             placeholder="??: ?�길?? 
+             label="성명" 
+             placeholder="예 : 홍길동" 
              value={formData.name}
              onChange={v => setFormData(prev => ({...prev, name: v}))}
            />
         )}
         
         <AuthInput 
-          label="?�메??주소" 
+          label="이메일 주소" 
           placeholder="name@example.com" 
           type="email"
           value={formData.email}
@@ -1243,20 +1248,20 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
         {mode === 'signup' && (
           <>
             <AuthInput 
-              label="?�년?�일" 
-              placeholder="??: 030303" 
+              label="생년월일" 
+              placeholder="예 : 030303" 
               value={formData.birthDate}
               onChange={v => setFormData(prev => ({...prev, birthDate: v}))}
             />
             <AuthInput 
-              label="?�화번호" 
-              placeholder="??: 01012345678" 
+              label="전화번호" 
+              placeholder="예 : 01012345678" 
               value={formData.phoneNumber}
               onChange={v => setFormData(prev => ({...prev, phoneNumber: v}))}
             />
             <AuthInput 
               label="차종" 
-              placeholder="??: bmw3?�리�?015" 
+              placeholder="예 : bmw3시리즈2015" 
               value={formData.carModel}
               onChange={v => setFormData(prev => ({...prev, carModel: v}))}
             />
@@ -1264,8 +1269,8 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
         )}
 
         <AuthInput 
-          label="비�?번호" 
-          placeholder="비�?번호�??�력?�세?? 
+          label="비밀번호" 
+          placeholder="비밀번호를 입력하세요" 
           type="password"
           value={formData.password}
           onChange={v => setFormData(prev => ({...prev, password: v}))}
@@ -1276,7 +1281,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
           disabled={loading}
           className="w-full bg-[#1ea08a] text-white font-black py-4 rounded-2xl text-lg shadow-xl shadow-emerald-100 hover:bg-[#1a8e7a] transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? '처리 �?..' : (mode === 'login' ? '로그?? : '?�원가???�료')}
+          {loading ? '처리 중...' : (mode === 'login' ? '로그인' : '회원가입 완료')}
         </button>
 
         {mode === 'login' && (
@@ -1332,7 +1337,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
           onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
           className="mt-6 text-emerald-600 font-black text-sm underline underline-offset-4 decoration-emerald-200"
         >
-          {mode === 'login' ? '?�직 ?�원???�니?��??? ?�원가?? : '?��? 계정???�으?��??? 로그??}
+          {mode === 'login' ? '아직 회원이 아니신가요? 회원가입' : '이미 계정이 있으신가요? 로그인'}
         </button>
       </motion.form>
     </div>
@@ -1409,8 +1414,8 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         if (current) {
           setWeatherData({
             temp: Math.round(current.temperature),
-            icon: current.weathercode <= 3 ? '?��? : (current.weathercode <= 48 ? '?�️' : '?���?),
-            condition: current.weathercode <= 3 ? '맑음' : (current.weathercode <= 48 ? '?�림' : '�???)
+            icon: current.weathercode <= 3 ? '☀️' : (current.weathercode <= 48 ? '☁️' : '🌧️'),
+            condition: current.weathercode <= 3 ? '맑음' : (current.weathercode <= 48 ? '흐림' : '비/눈')
           });
         }
 
@@ -1419,10 +1424,10 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
           const days = weatherJson.daily.time.slice(0, 5).map((dateStr: string, idx: number) => {
             const code = weatherJson.daily.weathercode[idx];
             const date = new Date(dateStr);
-            const dayNames = ['??, '??, '??, '??, '�?, '�?, '??];
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
             return {
               date: `${date.getMonth() + 1}/${date.getDate()}(${dayNames[date.getDay()]})`,
-              icon: code <= 3 ? '?��? : (code <= 48 ? '?�️' : '?���?),
+              icon: code <= 3 ? '☀️' : (code <= 48 ? '☁️' : '🌧️'),
               maxTemp: Math.round(weatherJson.daily.temperature_2m_max[idx]),
               minTemp: Math.round(weatherJson.daily.temperature_2m_min[idx])
             };
@@ -1432,8 +1437,8 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         
         // Air quality calculation (approximate PM2.5 status)
         let status = '좋음';
-        if (pm25 > 75) status = '매우?�쁨';
-        else if (pm25 > 35) status = '?�쁨';
+        if (pm25 > 75) status = '매우나쁨';
+        else if (pm25 > 35) status = '나쁨';
         else if (pm25 > 15) status = '보통';
         
         setAirQuality({ value: Math.round(pm25), status });
@@ -1475,12 +1480,12 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         console.warn("Weather fetch error - using fallback data", error);
         setWeatherData({
           temp: 26,
-          icon: '?��?,
+          icon: '☀️',
           condition: '맑음'
         });
         setAirQuality({
           value: 36,
-          status: '?�쁨'
+          status: '나쁨'
         });
         setWashIndex(60); // Neutral fallback
         setLoadingWeather(false);
@@ -1550,12 +1555,12 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         
         <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2">
           <h1 className="text-xl font-bold leading-none">
-            ?�차???�석
+            세차의 정석
           </h1>
           <div className="flex items-center gap-1.5 mt-1">
             <div className={`w-1.5 h-1.5 rounded-full ${state.isOffline ? 'bg-orange-400' : 'bg-[#1ea08a] shadow-[0_0_8px_rgba(30,160,138,0.5)] animate-pulse'}`} />
             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
-              {state.isOffline ? "?�버 ?�프?�인" : "DB ?�결??}
+              {state.isOffline ? "서버 오프라인" : "DB 연결됨"}
             </span>
           </div>
         </div>
@@ -1589,7 +1594,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
             {/* Left: Car Photo */}
             <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden bg-white border border-slate-100 shrink-0 shadow-sm flex items-center justify-center p-3 md:p-4">
               {user.carPhotoUrl ? (
-                <img src={user.carPhotoUrl} alt="차량 ?�진" className="w-full h-full object-cover rounded-xl" referrerPolicy="no-referrer" />
+                <img src={user.carPhotoUrl} alt="차량 사진" className="w-full h-full object-cover rounded-xl" referrerPolicy="no-referrer" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300 rounded-xl">
                   <Car size={32} />
@@ -1600,14 +1605,15 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
             {/* Right: Info */}
             <div className="flex flex-col gap-1 flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-lg md:text-xl">?��</span>
+                <span className="text-lg md:text-xl">🏆</span>
                 <span className="font-extrabold text-slate-800 text-[15px] md:text-lg tracking-tight truncate">
-                  {latestBadge ? latestBadge.label : "명예 ?��?�?}
+                  {latestBadge ? latestBadge.label : "명예 대기 중"}
                 </span>
               </div>
               <p className="text-[13px] md:text-[15px] font-black text-slate-700 leading-tight">
-                {user.carModel || "차량"} 고객??br/>
-                ?�영?�니??              </p>
+                {user.carModel || "차량"} 고객님<br/>
+                환영합니다
+              </p>
             </div>
           </motion.div>
         )}
@@ -1616,22 +1622,22 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         <motion.div variants={item} className="bg-white rounded-[3.5rem] p-8 md:p-12 shadow-md border border-white/50 mb-10 overflow-hidden">
           <div className="flex items-center justify-center gap-3 mb-8">
             <Bell size={24} className="text-slate-800" strokeWidth={2.5}/>
-            <h4 className="font-black text-[#3d5a55] text-lg">공�??�항 �?미세먼�? ?�도</h4>
+            <h4 className="font-black text-[#3d5a55] text-lg">공지사항 및 미세먼지 농도</h4>
           </div>
           
           <div className="flex flex-col gap-8">
             <div className="flex justify-between items-center bg-slate-50/50 p-2 rounded-full pr-4">
-              <span className="text-slate-500 font-black text-sm ml-2">?�늘??미세먼�?</span>
+              <span className="text-slate-500 font-black text-sm ml-2">오늘의 미세먼지</span>
               {loadingWeather ? (
-                <span className="text-slate-300 text-xs animate-pulse">?�보�?불러?�는 �?..</span>
+                <span className="text-slate-300 text-xs animate-pulse">정보를 불러오는 중...</span>
               ) : (
                 <span className={`px-5 py-2 rounded-full text-xs font-black shadow-sm ${
-                  airQuality?.status === '매우?�쁨' ? 'bg-red-100 text-red-600' : 
-                  airQuality?.status === '?�쁨' ? 'bg-orange-100 text-orange-600' :
+                  airQuality?.status === '매우나쁨' ? 'bg-red-100 text-red-600' : 
+                  airQuality?.status === '나쁨' ? 'bg-orange-100 text-orange-600' :
                   airQuality?.status === '보통' ? 'bg-[#fef2e2] text-[#d68910]' :
                   'bg-emerald-100 text-emerald-600'
                 }`}>
-                  {airQuality?.status} ({airQuality?.value}µg/??
+                  {airQuality?.status} ({airQuality?.value}µg/㎥)
                 </span>
               )}
             </div>
@@ -1639,16 +1645,16 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
             <div className="bg-orange-50 rounded-[10px] p-5 border border-orange-100/50 flex flex-col gap-2">
               <div className="flex items-center gap-2 text-orange-600">
                 <ShieldCheck size={18} strokeWidth={3} />
-                <span className="text-[11px] font-black uppercase tracking-wider">?�용 꿀??& 주의?�항</span>
+                <span className="text-[11px] font-black uppercase tracking-wider">이용 꿀팁 & 주의사항</span>
               </div>
               <p className="text-[13px] text-slate-700 leading-relaxed font-bold">
-                ?�?�세�???<span className="text-orange-600 underline underline-offset-2">공용??/span>???�용?�시�?차량??미세 기스가 ?????�어?? 기스??민감?�신 분들?� 개인??브러?�나 미트 ?�용??추천?�니??
+                셀프세차 시 <span className="text-orange-600 underline underline-offset-2">공용솔</span>을 사용하시면 차량에 미세 기스가 날 수 있어요. 기스에 민감하신 분들은 개인용 브러쉬나 미트 사용을 추천합니다!
               </p>
             </div>
             
             <div className="flex items-start justify-between gap-6">
               <div className="flex flex-col gap-3">
-                <span className="text-slate-500 font-black text-xs">추천 ?�차 지??/span>
+                <span className="text-slate-500 font-black text-xs">추천 세차 지수</span>
                 <div className="w-28 h-28 shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-50">
                   <img 
                     src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=200&h=200&fit=crop" 
@@ -1660,13 +1666,13 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
               </div>
               <div className="flex-1 pt-4">
                 <span className={`text-2xl font-black block mb-3 leading-tight tracking-tight ${washIndex > 70 ? 'text-[#1ea08a]' : washIndex > 40 ? 'text-orange-500' : 'text-red-500'}`}>
-                  {washIndex}% - {washIndex > 70 ? '?�차?�기 좋�? ??' : washIndex > 40 ? '?�차�?고려?�보?�요' : '?�늘?� ?�차�?참아주세??}
+                  {washIndex}% - {washIndex > 70 ? '세차하기 좋은 날!' : washIndex > 40 ? '세차를 고려해보세요' : '오늘은 세차를 참아주세요'}
                 </span>
                 <p className="text-[12px] text-slate-500 leading-relaxed font-bold">
-                  {loadingWeather ? '기상 ?�보�?분석?�고 ?�습?�다...' : 
-                   washIndex > 70 ? '미세먼�??� ?�씨가 최적?�니?? 바로 ?�차?�보?�요.' :
-                   washIndex > 40 ? '구름??많거??미세먼�?가 ?�을 ???�습?�다.' :
-                   '�??�보가 ?�거???�기질??좋�? ?�습?�다.'}
+                  {loadingWeather ? '기상 정보를 분석하고 있습니다...' : 
+                   washIndex > 70 ? '미세먼지와 날씨가 최적입니다. 바로 세차해보세요.' :
+                   washIndex > 40 ? '구름이 많거나 미세먼지가 있을 수 있습니다.' :
+                   '비 예보가 있거나 대기질이 좋지 않습니다.'}
                 </p>
               </div>
             </div>
@@ -1675,13 +1681,13 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
             {!loadingWeather && forecastData.length > 0 && (
               <div className="mt-6 pt-6 border-t border-slate-100">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-slate-500 font-black text-xs">주간 ?�씨 ?�보 (5??</span>
+                  <span className="text-slate-500 font-black text-xs">주간 날씨 예보 (5일)</span>
                   <div className="h-1 flex-1 mx-4 bg-slate-50 rounded-full" />
                 </div>
                 <div className="flex justify-between gap-2 overflow-x-auto pb-2 scrollbar-hide">
                   {forecastData.map((day, i) => (
                     <div key={i} className="flex flex-col items-center gap-1.5 min-w-[60px] bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
-                      <span className="text-[10px] font-black text-slate-400">{i === 0 ? '?�늘' : day.date}</span>
+                      <span className="text-[10px] font-black text-slate-400">{i === 0 ? '오늘' : day.date}</span>
                       <span className="text-xl">{day.icon}</span>
                       <div className="flex flex-col items-center leading-none">
                         <span className="text-[12px] font-black text-slate-700">{day.maxTemp}°</span>
@@ -1702,12 +1708,14 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
               onClick={() => setView('auth')} 
               className="w-full bg-[#e6f4f2] h-[58px] rounded-xl text-[#3d5a55] font-black shadow-sm active:scale-[0.98] border border-white/60 transition-all hover:bg-white flex items-center justify-center"
             >
-              로그??            </button>
+              로그인
+            </button>
             <button 
               onClick={() => setView('auth')} 
               className="w-full bg-[#e6f4f2] h-[58px] rounded-xl text-[#3d5a55] font-black shadow-sm active:scale-[0.98] border border-white/60 transition-all hover:bg-white flex items-center justify-center"
             >
-              ?�원가??            </button>
+              회원가입
+            </button>
           </motion.div>
         )}
 
@@ -1715,10 +1723,10 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <ServiceCard 
             icon={<div className="bg-[#e6f4f2] p-3.5 rounded-full text-[#1ea08a]"><Navigation size={22} fill="currentColor" strokeWidth={1.5}/></div>}
-            label="빠른?�치?�비??
+            label="빠른위치서비스"
             onClick={() => {
               if (!user) {
-                alert("???�비?��? ?�용?�시?�면 먼�? 로그?�해주세??");
+                alert("이 서비스를 이용하시려면 먼저 로그인해주세요!");
                 setView('auth');
               } else {
                 onOpenService();
@@ -1727,10 +1735,10 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
           />
           <ServiceCard 
             icon={<div className="bg-[#f0f9ff] p-3.5 rounded-full text-[#3b82f6]"><Star size={22} fill="currentColor" strokeWidth={1.5}/></div>}
-            label="매트�?�� 리뷰"
+            label="매트릭스 리뷰"
             onClick={() => {
               if (!user) {
-                alert("리뷰�??�성?�시?�면 먼�? 로그?�해주세??");
+                alert("리뷰를 작성하시려면 먼저 로그인해주세요!");
                 setView('auth');
               } else {
                 setView('review_matrix');
@@ -1740,22 +1748,22 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
           <ServiceCard 
             icon={user?.carPhotoUrl ? (
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#fff7ed] shadow-sm">
-                <img src={user.carPhotoUrl} alt="??차량" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={user.carPhotoUrl} alt="내 차량" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
             ) : (
               <div className="bg-[#fff7ed] p-3.5 rounded-full text-[#f97316]"><Car size={22} fill="currentColor" strokeWidth={1.5}/></div>
             )}
-            label={user ? "??차량 ?�정" : "??차량 ?�정"}
+            label={user ? "내 차량 수정" : "내 차량 설정"}
             onClick={() => {
               setState((prev: any) => ({ ...prev, modal: 'vehicle_config' }));
             }}
           />
           <ServiceCard 
             icon={<div className="bg-[#fefce8] p-3.5 rounded-full text-[#ca8a04]"><Lightbulb size={22} fill="currentColor" strokeWidth={1.5}/></div>}
-            label="?�문가 ?�하??
+            label="전문가 노하우"
             onClick={() => {
               if (!user) {
-                alert("?�문가 ?�하?��? 보시?�면 먼�? 로그?�해주세??");
+                alert("전문가 노하우를 보시려면 먼저 로그인해주세요!");
                 setView('auth');
               } else {
                 setView('guide');
@@ -1769,7 +1777,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
           variants={item}
           onClick={() => {
             if (!user) {
-              alert("AI ?�문가?� ?�담?�시?�면 먼�? 로그?�해주세??");
+              alert("AI 전문가와 상담하시려면 먼저 로그인해주세요!");
               setView('auth');
             } else {
               setState((prev: any) => ({ ...prev, view: 'chat' })); // Force chat view for AI
@@ -1787,7 +1795,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
                  <Sparkles size={16} className="text-[#34d399] animate-pulse" />
                  <span className="text-[11px] font-black tracking-[0.15em] text-[#34d399] uppercase">AI Assistant</span>
                </div>
-               <span className="font-black text-white text-[22px] tracking-tight text-left leading-tight break-keep">AI?�차?�문가?�테<br/>물어보세??!</span>
+               <span className="font-black text-white text-[22px] tracking-tight text-left leading-tight break-keep">AI세차전문가한테<br/>물어보세요!!</span>
              </div>
 
              <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all shadow-lg shrink-0">
@@ -1809,8 +1817,8 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
                  <ShieldCheck size={32} className="text-white group-hover:scale-110 transition-transform" strokeWidth={2} />
                </div>
                <div className="flex flex-col items-start gap-1 text-left">
-                 <span className="font-black text-[20px] tracking-tight text-white leading-tight">?�무???�?�보??/span>
-                 <span className="text-[12px] text-orange-200 font-bold tracking-wide">고객 문의 집중 관�?/span>
+                 <span className="font-black text-[20px] tracking-tight text-white leading-tight">실무자 대시보드</span>
+                 <span className="text-[12px] text-orange-200 font-bold tracking-wide">고객 문의 집중 관리</span>
                </div>
             </div>
             
@@ -1836,7 +1844,7 @@ function ServiceCard({ icon, label, onClick }: { icon: any, label: string, onCli
     </motion.div>
   );
 }
-function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신?��? 무엇?�니�?", placeholder = "궁금???�용???�력?�세??, allowAutoAI = false, chatType = "general", overrideSessionId, onNavigateToGuide }: { user: UserProfile | null, onBack: () => void, onPhoto: () => void, onPhotoSelect?: (file: File) => void, title?: string, placeholder?: string, allowAutoAI?: boolean, chatType?: "ai" | "expert" | "general", overrideSessionId?: string, onNavigateToGuide?: () => void }) {
+function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하신점은 무엇입니까~", placeholder = "궁금한 내용을 입력하세요", allowAutoAI = false, chatType = "general", overrideSessionId, onNavigateToGuide }: { user: UserProfile | null, onBack: () => void, onPhoto: () => void, onPhotoSelect?: (file: File) => void, title?: string, placeholder?: string, allowAutoAI?: boolean, chatType?: "ai" | "expert" | "general", overrideSessionId?: string, onNavigateToGuide?: () => void }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -1860,7 +1868,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
   // Load messages
   useEffect(() => {
     if (!db || !sessionId) {
-      setLocalMessages([{ role: 'model', content: "반갑?�니?? 무엇?�든 물어보세?? ?�차 관??궁금증을 ?�결???�립?�다.", timestamp: new Date().toISOString(), roleLabel: '?�무?�의 ?��?' }]);
+      setLocalMessages([{ role: 'model', content: "반갑습니다! 무엇이든 물어보세요. 세차 관련 궁금증을 해결해 드립니다.", timestamp: new Date().toISOString(), roleLabel: '실무자의 답변' }]);
       return;
     }
 
@@ -1874,7 +1882,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
       })) as ChatMessage[];
       
       if (msgs.length === 0) {
-        setMessages([{ role: 'model', content: "반갑?�니?? 무엇?�든 물어보세?? ?�차 관??궁금증을 ?�결???�립?�다.", timestamp: new Date().toISOString(), roleLabel: '?�무?�의 ?��?' }]);
+        setMessages([{ role: 'model', content: "반갑습니다! 무엇이든 물어보세요. 세차 관련 궁금증을 해결해 드립니다.", timestamp: new Date().toISOString(), roleLabel: '실무자의 답변' }]);
       } else {
         setMessages(msgs);
       }
@@ -1894,7 +1902,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
       const msgRef = doc(db, 'chatSessions', sessionId, subCol, msgId);
       await deleteDoc(msgRef);
     } catch (error) {
-      console.error("메시지 ??�� ?�류:", error);
+      console.error("메시지 삭제 오류:", error);
     }
   };
 
@@ -1913,7 +1921,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
       role: mode,
       content: content,
       timestamp: new Date().toISOString(),
-      roleLabel: mode === 'user' ? '궁금?�점' : '?�무?�의 ?��?'
+      roleLabel: mode === 'user' ? '궁금한점' : '실무자의 답변'
     };
 
     // Optimistically update UI
@@ -1937,7 +1945,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
             lastExpertQueryAt: serverTimestamp(),
             userId: sessionId,
             userEmail: user?.email || 'guest',
-            userName: user?.name || '?�용??
+            userName: user?.name || '사용자'
           }, { merge: true }).catch(err => console.error("Firestore session update error:", err));
         }
       }
@@ -1950,13 +1958,13 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
         }));
         
         const carInfo = user?.carModel || user?.carSize 
-          ? `(?�용??차량 ?�보: ${user.carSize || ''} ${user.carModel || ''})` 
-          : "(차량 ?�보 ?�음)";
+          ? `(사용자 차량 정보: ${user.carSize || ''} ${user.carModel || ''})` 
+          : "(차량 정보 없음)";
 
         try {
           const response = await callAI(
             [...history, { role: 'user', parts: [{ text: content }] }],
-            `?�신?� '?�차???�석' ?�의 AI ?�차 ?�문가?�니?? ?�신?� ?�직 '?�차'?� 관?�된 주제(?�차 방법, 주기, ?�품, 차량 관�??????�?�서�??��??�야 ?�니?? ?�차?� 관???�는 질문???�?�서??"죄송?�니?? ?�???�차 ?�문가로서 ?�차?� 관?�된 궁금증만 ?�결???�릴 ???�습?�다."?�고 ?�중?�게 거절?�십?�오. ${carInfo} ?�용?�에�??�문?�이�?친절?�게 ?�담?�주?�요. ?��??� 반드???�국?�로 ?�성?�십?�오.`
+            `당신은 '세차의 정석' 앱의 AI 세차 전문가입니다. 당신은 오직 '세차'와 관련된 주제(세차 방법, 주기, 용품, 차량 관리 등)에 대해서만 답변해야 합니다. 세차와 관련 없는 질문에 대해서는 "죄송합니다. 저는 세차 전문가로서 세차와 관련된 궁금증만 해결해 드릴 수 있습니다."라고 정중하게 거절하십시오. ${carInfo} 사용자에게 전문적이고 친절하게 상담해주세요. 답변은 반드시 한국어로 작성하십시오.`
           );
 
           if (response.text) {
@@ -1964,7 +1972,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
               role: 'model',
               content: response.text,
               timestamp: new Date().toISOString(),
-              roleLabel: 'AI?�차?�문가'
+              roleLabel: 'AI세차전문가'
             };
 
             if (db) {
@@ -1980,15 +1988,15 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
         } catch (aiErr: any) {
           console.error("AI Response Error:", aiErr);
           const errorMsg = aiErr.message?.includes('503') || aiErr.message?.includes('demand')
-            ? "?�재 ?�공지???�버??부?��? 많아 ?��???지?�되�??�습?�다. ?�시 ???�시 ?�도?�주?�거?? '?�무???�담' 메뉴�??�용?�주?�요."
-            : "AI ?��???가?�오??�??�류가 발생?�습?�다. ?�시 ???�시 ?�도?�주?�요.";
+            ? "현재 인공지능 서버의 부하가 많아 답변이 지연되고 있습니다. 잠시 후 다시 시도해주시거나, '실무자 상담' 메뉴를 이용해주세요."
+            : "AI 답변을 가져오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
             
           setLocalMessages(prev => [...prev, { 
             id: 'err-' + Date.now(), 
             role: 'model', 
             content: errorMsg, 
             timestamp: new Date().toISOString(), 
-            roleLabel: '?�림' 
+            roleLabel: '알림' 
           }]);
         }
       } 
@@ -2030,7 +2038,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
         {chatType === 'expert' && (
           <div className="bg-amber-50 border-b border-amber-100 px-6 py-3">
             <p className="text-[11px] font-black text-amber-800 leading-relaxed text-center">
-              ?�� ?�무?��? ?�하??중일 ?�도 ?�습?�다. 바로바로 ?��? �??�드리니 급하??고객?�께?�는 [AI?�차박사]�??�용??주세??! (?�일 18~23?? ?�심?�간 가?�합?�다)
+              🔔 실무자가 일하는 중일 수도 있습니다. 바로바로 답변 못 해드리니 급하신 고객님께서는 [AI세차박사]를 이용해 주세요!! (평일 18~23시, 점심시간 가능합니다)
             </p>
           </div>
         )}
@@ -2064,14 +2072,14 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
 
                  <div className="mb-2 pr-12">
                    <p className="text-[17px] font-black tracking-tighter">
-                     {m.role === 'user' ? (m.roleLabel || '궁금?�점') : (m.roleLabel || '?�무?�의 ?��?')}
+                     {m.role === 'user' ? (m.roleLabel || '궁금한점') : (m.roleLabel || '실무자의 답변')}
                    </p>
                  </div>
 
                  <div className="text-[16px] leading-relaxed font-bold mt-2">
                    {m.photoUrl && (
                      <div className="mb-4 rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm bg-slate-50">
-                       <img src={m.photoUrl} alt="첨�? ?�진" className="w-full object-cover max-h-80" referrerPolicy="no-referrer" />
+                       <img src={m.photoUrl} alt="첨부 사진" className="w-full object-cover max-h-80" referrerPolicy="no-referrer" />
                      </div>
                    )}
                    <Markdown>{m.content}</Markdown>
@@ -2084,7 +2092,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
                          onClick={onPhoto}
                          className="px-3 py-1 bg-[#1ea08a] text-white text-xs font-black rounded-full hover:bg-[#15806c] transition-colors"
                        >
-                         ?��??�기
+                         답변하기
                        </button>
                     )}
                     <X 
@@ -2099,7 +2107,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
               </div>
             </motion.div>
           ))}
-          {isLoading && <div className="self-start text-[11px] font-black text-slate-400 bg-white/50 px-4 py-2 rounded-full animate-pulse ml-4">기록�?..</div>}
+          {isLoading && <div className="self-start text-[11px] font-black text-slate-400 bg-white/50 px-4 py-2 rounded-full animate-pulse ml-4">기록중...</div>}
         </div>
       </div>
 
@@ -2130,7 +2138,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
             )}
             <input 
               type="text" 
-              placeholder={chatType === 'expert' && mode === 'model' ? "?�무???��??�" : placeholder}
+              placeholder={chatType === 'expert' && mode === 'model' ? "실무자 답변란" : placeholder}
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => {
@@ -2160,7 +2168,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금?�신
   );
 }
 
-function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", disableAI = false, chatType = "general", overrideSessionId, initialFile }: { user: UserProfile | null, onBack: () => void, title?: string, disableAI?: boolean, chatType?: "ai" | "expert" | "general", overrideSessionId?: string | null, initialFile?: File | null }) {
+function PhotoUploadScreen({ user, onBack, title = "사진과 함께 기록하기", disableAI = false, chatType = "general", overrideSessionId, initialFile }: { user: UserProfile | null, onBack: () => void, title?: string, disableAI?: boolean, chatType?: "ai" | "expert" | "general", overrideSessionId?: string | null, initialFile?: File | null }) {
   const [file, setFile] = useState<File | null>(initialFile || null);
   const [preview, setPreview] = useState<string | null>(null);
   const [description, setDescription] = useState('');
@@ -2190,24 +2198,24 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
 
   const handleSend = async () => {
     if (!user) {
-      alert("로그?�이 ?�요?�니??");
+      alert("로그인이 필요합니다.");
       return;
     }
     
     if (!description.trim() && !preview) {
-      alert("?�용???�력?�거???�진???�택?�주?�요.");
+      alert("내용을 입력하거나 사진을 선택해주세요.");
       return;
     }
     
     // Fallback messages
     const defaultMsg = preview 
-      ? (mode === 'model' ? "?�진 첨�? ?�일?�니??" : "[?�진 공유] ?�담 부?�드립니??") 
+      ? (mode === 'model' ? "사진 첨부 파일입니다." : "[사진 공유] 상담 부탁드립니다!") 
       : "";
     const userMessage = description.trim() || defaultMsg;
 
     // Restriction: Only wlsgns9607@gmail.com can answer as 'model' in expert chat
     if (chatType === "expert" && mode === 'model' && user?.email !== 'wlsgns9607@gmail.com') {
-      alert("?�차 ?�무??권한???�습?�다.");
+      alert("세차 실무자 권한이 없습니다.");
       return;
     }
 
@@ -2219,7 +2227,7 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
       const recordsPath = `records/${sessionId}/userRecords`; // Save to the session owner's records
       
     if (!db) {
-      alert("?�이?�베?�스 ?�결 ?��?중입?�다. ?�시 ???�시 ?�도?�주?�요.");
+      alert("데이터베이스 연결 대기 중입니다. 잠시 후 다시 시도해주세요.");
       setIsSending(false);
       return;
     }
@@ -2233,7 +2241,7 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
         timestamp: serverTimestamp(),
         hasPhoto: !!preview,
         photoUrl: preview || null,
-        roleLabel: mode === 'model' ? '?�무?�의 ?��?' : '?�달 메시지'
+        roleLabel: mode === 'model' ? '실무자의 답변' : '전달 메시지'
       }).catch(err => {
         handleFirestoreError(err, 'write' as any, messagesPath);
         throw err;
@@ -2247,7 +2255,7 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
           lastExpertQueryAt: serverTimestamp(),
           userId: sessionId,
           userEmail: user?.email || 'anonymous',
-          userName: user?.name || '?�용??
+          userName: user?.name || '사용자'
         };
         await setDoc(sessionRef, sessionUpdate, { merge: true });
       }
@@ -2277,19 +2285,19 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
              role: 'user',
              parts: [
                { inlineData: { mimeType, data } },
-               { text: `?�용?��? ?�차 ?�진�??�께 문의?�습?�다: "${userMessage}". ?�진 ?�용??분석?�고 ?��???주는 ?��????�성?�주?�요.` }
+               { text: `사용자가 세차 사진과 함께 문의했습니다: "${userMessage}". 사진 내용을 분석하고 도움을 주는 답변을 작성해주세요.` }
              ]
            });
         } else {
            aiContents.push({ 
              role: 'user', 
-             parts: [{ text: `?�용?��? ?�차 ?�진�??�께 문의?�습?�다: "${userMessage}". ?�진 ?�용??분석?�고 ?��???주는 ?��????�성?�주?�요.` }] 
+             parts: [{ text: `사용자가 세차 사진과 함께 문의했습니다: "${userMessage}". 사진 내용을 분석하고 도움을 주는 답변을 작성해주세요.` }] 
            });
         }
 
         callAI(
           aiContents,
-          "?�신?� '?�차???�석' ?�의 AI ?�차 ?�문가?�니?? ?�직 '?�차'?� 관?�된 주제???�?�서�??��??�십?�오. ?�진 분석 ?�에???�차?� 관?�된 ?�보(?�염?? ?�집, ?�질 ??�??�루�? ?�차?� 무�????�진???�?�서???�중???��???거절?�십?�오. 모든 ?��??� ?�국?�로 ?�문?�이�?친절?�게 ?�성?�야 ?�니??"
+          "당신은 '세차의 정석' 앱의 AI 세차 전문가입니다. 오직 '세차'와 관련된 주제에 대해서만 답변하십시오. 사진 분석 시에도 세차와 관련된 정보(오염도, 흠집, 재질 등)만 다루고, 세차와 무관한 사진에 대해서는 정중히 답변을 거절하십시오. 모든 답변은 한국어로 전문적이고 친절하게 작성해야 합니다."
         ).then(async (response) => {
           if (response.text) {
             await addDoc(messagesRef, {
@@ -2301,18 +2309,18 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
         }).catch(err => {
           console.error("AI background error:", err);
           if (err.message?.includes('API_KEY')) {
-            alert("AI ?�비??API ???�식?????�니?? 관리자 ?�정???�인?�주?�요.");
+            alert("AI 서비스 API 키 인식이 안 됩니다. 관리자 설정을 확인해주세요.");
           } else {
-            alert("AI 분석 �??�류가 발생?�습?�다: " + err.message);
+            alert("AI 분석 중 오류가 발생했습니다: " + err.message);
           }
         });
       }
 
-      alert("?�공?�으�?기록?�었?�니??");
+      alert("성공적으로 기록되었습니다!");
       onBack();
     } catch (error) {
        console.error("Photo Send Error:", error);
-       alert("?�송 �??�류가 발생?�습?�다.");
+       alert("전송 중 오류가 발생했습니다.");
     } finally {
        setIsSending(false);
     }
@@ -2340,7 +2348,7 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
           <textarea 
              value={description}
              onChange={e => setDescription(e.target.value)}
-             placeholder={!preview ? "?�곳???�용???�성?�주?�요." : ""}
+             placeholder={!preview ? "이곳에 내용을 작성해주세요." : ""}
              className="flex-1 w-full bg-transparent resize-none focus:outline-none p-5 text-slate-700 font-bold text-[16px] placeholder:text-slate-400"
           />
           {!preview && (
@@ -2359,14 +2367,14 @@ function PhotoUploadScreen({ user, onBack, title = "?�진�??�께 기록?�기", 
              onClick={onBack}
              className="flex-1 bg-[#cbede5] text-slate-800 font-black py-4 rounded-[1.5rem] shadow-sm active:scale-95 transition-all text-[18px]"
           >
-             취소?�기
+             취소하기
           </button>
           <button 
              onClick={handleSend}
              disabled={isSending}
              className="flex-1 bg-[#1ea08a] text-white font-black py-4 rounded-[1.5rem] shadow-md active:scale-95 transition-all disabled:opacity-50 text-[18px]"
           >
-             {isSending ? '?�송�?..' : '?�송?�기'}
+             {isSending ? '전송중...' : '전송하기'}
           </button>
        </div>
     </div>
@@ -2433,7 +2441,8 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
           <ArrowLeft size={24} strokeWidth={2.5} />
         </button>
         <h2 className="text-[17px] font-black text-slate-800 pointer-events-none whitespace-nowrap">
-           ?�무???�?�보??        </h2>
+           실무자 대시보드
+        </h2>
       </div>
 
       {/* Tabs */}
@@ -2448,17 +2457,17 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
           onClick={() => setActiveTab('reviews')}
           className={`flex-1 py-4 text-sm font-black transition-colors border-b-4 ${activeTab === 'reviews' ? 'border-indigo-500 text-indigo-500' : 'border-transparent text-slate-400'}`}
         >
-          매트�?�� 리포??({reviews.length})
+          매트릭스 리포트 ({reviews.length})
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pt-8">
         <div className="px-4 mb-4">
            <h3 className="text-[14px] font-black text-slate-400 uppercase tracking-widest">
-             {activeTab === 'queries' ? '?�무??마스???�?�보?? : '?�량???�차 리포???�집'}
+             {activeTab === 'queries' ? '실무자 마스터 대시보드' : '정량적 세차 리포트 수집'}
            </h3>
            <p className="text-[12px] text-slate-400 font-bold mt-1">
-             {activeTab === 'queries' ? '문의가 ?�어??고객 리스?�입?�다.' : '고객???�출??2�?매트�?�� 리포?�입?�다.'}
+             {activeTab === 'queries' ? '문의가 들어온 고객 리스트입니다.' : '고객이 제출한 2축 매트릭스 리포트입니다.'}
            </p>
         </div>
 
@@ -2469,7 +2478,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
         ) : activeTab === 'queries' ? (
           sessions.length === 0 ? (
             <div className="text-center py-20 bg-white/50 rounded-[2.5rem] mx-2 border-2 border-dashed border-slate-200">
-              <p className="text-slate-500 font-black">?�로??문의가 ?�습?�다.</p>
+              <p className="text-slate-500 font-black">새로운 문의가 없습니다.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2485,7 +2494,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
                       {session.userName?.[0] || 'U'}
                     </div>
                     <div className="min-w-0">
-                       <h3 className="font-black text-slate-800 text-[16px] mb-0.5 truncate">{session.userName || '?�명 ?�용??}</h3>
+                       <h3 className="font-black text-slate-800 text-[16px] mb-0.5 truncate">{session.userName || '익명 사용자'}</h3>
                        <div className="flex items-center gap-2">
                           <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full truncate max-w-[120px]">{session.userEmail}</span>
                        </div>
@@ -2502,7 +2511,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
         ) : (
           reviews.length === 0 ? (
             <div className="text-center py-20 bg-white/50 rounded-[2.5rem] mx-2 border-2 border-dashed border-slate-200">
-              <p className="text-slate-500 font-black">?�출??리포?��? ?�습?�다.</p>
+              <p className="text-slate-500 font-black">제출된 리포트가 없습니다.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2518,26 +2527,27 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
                       </div>
                       <div>
                         <h4 className="font-black text-slate-800 text-[15px]">{review.userName}</h4>
-                        <span className="text-[10px] font-bold text-slate-400">{review.carModel} ??{review.createdAt?.toDate()?.toLocaleString('ko-KR')}</span>
+                        <span className="text-[10px] font-bold text-slate-400">{review.carModel} • {review.createdAt?.toDate()?.toLocaleString('ko-KR')}</span>
                       </div>
                     </div>
                     <div className="flex flex-col items-end">
-                      <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">?�문가 ?��? ?�수</span>
+                      <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">전문가 평가 점수</span>
                       <span className="text-[18px] font-black text-slate-900">{review.qualityIndex}<span className="text-[12px] text-slate-300 ml-0.5">pt</span></span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">?�간 준???�과</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">시간 준수 성과</span>
                         <div className="flex items-end gap-2">
                           <span className={`text-[15px] font-black ${review.actualTime <= review.plannedTime ? 'text-emerald-600' : 'text-orange-500'}`}>
-                            {review.actualTime}�?                          </span>
-                          <span className="text-[10px] text-slate-300 font-bold mb-0.5">/ {review.plannedTime}�?/span>
+                            {review.actualTime}분
+                          </span>
+                          <span className="text-[10px] text-slate-300 font-bold mb-0.5">/ {review.plannedTime}분</span>
                         </div>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">매트�?�� 좌표 (X, Y)</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">매트릭스 좌표 (X, Y)</span>
                         <div className="flex items-center gap-2">
                           <Target size={14} className="text-indigo-400" />
                           <span className="text-[13px] font-black text-slate-700">X:{Math.round(review.pin.x)} Y:{Math.round(review.pin.y)}</span>
@@ -2556,7 +2566,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
                     <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 mb-2">
                         <div className="flex items-center gap-2 mb-2">
                           <BookOpen size={14} className="text-emerald-600" />
-                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">?�문가 ?�세 ?�견</span>
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">전문가 상세 의견</span>
                         </div>
                         <p className="text-slate-700 text-[12px] font-medium leading-relaxed">
                           {review.expertComment}
@@ -2569,7 +2579,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
                       {Object.entries(review.detailedScores).map(([key, val]: [string, any]) => (
                         <div key={key} className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
                           <span className="text-[10px] font-bold text-slate-500">{key}</span>
-                          <span className="text-[12px]">{val === 1 ? '?��' : val === 2 ? '?��' : '?��'}</span>
+                          <span className="text-[12px]">{val === 1 ? '🙁' : val === 2 ? '😐' : '😊'}</span>
                         </div>
                       ))}
                     </div>
@@ -2586,10 +2596,10 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
 
 function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
   // ==========================================
-  // [?��?지 교체 가?�드]
-  // ?�래 ??줄의 ?�옴??"") ?�에 ?�하???��?지 주소(URL)�?복사?�서 붙여?�으?�요.
-  // 1. MAIN_CAR_IMAGE: ?�면 ?�단????메인 ?��?지?�니??
-  // 2. SUB_TOOL_IMAGE: ?�측 ?�단?????�는 ?��? ?�브 ?��?지?�니??
+  // [이미지 교체 가이드]
+  // 아래 두 줄의 따옴표("") 안에 원하는 이미지 주소(URL)를 복사해서 붙여넣으세요.
+  // 1. MAIN_CAR_IMAGE: 화면 상단의 큰 메인 이미지입니다.
+  // 2. SUB_TOOL_IMAGE: 우측 하단에 떠 있는 작은 서브 이미지입니다.
   // ==========================================
   const MAIN_CAR_IMAGE = new URL('../img/img_001.jpg', import.meta.url).href;
   const SUB_TOOL_IMAGE = new URL('../img/img_002.jpg', import.meta.url).href;
@@ -2601,7 +2611,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-slate-600">
           <ChevronLeft size={24} />
         </button>
-        <h2 className="text-[17px] font-black text-slate-800 absolute left-1/2 -translate-x-1/2">?�차?�무?�의 ?�하??/h2>
+        <h2 className="text-[17px] font-black text-slate-800 absolute left-1/2 -translate-x-1/2">세차실무자의 노하우</h2>
         <div className="w-10" />
       </div>
 
@@ -2637,39 +2647,39 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2 group">
             <button 
-              onClick={() => speak("?�차 고수???�율 200?�센???�서 가?�드?�니?? 1?�계 ?�내 ?�차. ?�전???�좌?�을 ?�외??문을 ???�고, ??좌석 ?�트�?최�???밉니?? ?�어건으�??? ???�서�?먼�?�??�려보내�? 조수?? ?�좌?? ?�전?? ?�렁???�서�?�?��기�? ?�립?�다. ?�내 마무리는 무조�??�리부????�� ?�내 ?�정?�로 ?��?�???��?�다. 2?�계 ?��? ?�차. ?�에???�래�?고압?��? ?�건??뿌린 ?? 거품???�는 ?�태?�서 ?�을 먼�? ??��줍니?? ?�후 고압?�로 꼼꼼???�굽?�다. 3?�계 ?�라??�?마무�? ?�어건으�??�새 물기�??�리�? ?�리 ?�용 ?�?�로 ?�리부????��?�다. ?�후 깨끗???�?�로 ?�장면을 ??��, 문틈�??�렁??물기까�? ?�벽?�게 ?�거?�여 ?�끼�?방�??�니?? 꼬임 ?�는 ?�선???�명?�니??")}
+              onClick={() => speak("세차 고수의 효율 200퍼센트 순서 가이드입니다. 1단계 실내 세차. 운전석 뒷좌석을 제외한 문을 다 열고, 앞 좌석 시트를 최대한 밉니다. 에어건으로 앞, 뒤 순서로 먼지를 날려보내고, 조수석, 뒷좌석, 운전석, 트렁크 순서로 청소기를 돌립니다. 실내 마무리는 무조건 유리부터 닦고 실내 세정제로 내부를 닦습니다. 2단계 외부 세차. 위에서 아래로 고압수와 폼건을 뿌린 뒤, 거품이 있는 상태에서 휠을 먼저 닦아줍니다. 이후 고압수로 꼼꼼히 헹굽니다. 3단계 드라이 및 마무리. 에어건으로 틈새 물기를 날리고, 유리 전용 타월로 유리부터 닦습니다. 이후 깨끗한 타월로 도장면을 닦고, 문틈과 트렁크 물기까지 완벽하게 제거하여 이끼를 방지합니다. 꼬임 없는 동선이 생명입니다!")}
               className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
             >
               <Volume2 size={24} className="currentColor" />
             </button>
             <div className="flex justify-between items-start mb-4 pr-12">
               <h4 className="font-black text-slate-800 text-[15px] leading-tight">
-                ?�차 고수??'?�율 200%' ?�서 가?�드<br/>
-                1?�계: ?�내 ?�차 (본넷 ?�도 ??���?
+                세차 고수의 '효율 200%' 순서 가이드<br/>
+                1단계: 실내 세차 (본넷 온도 낮추기)
               </h4>
             </div>
             
             <ul className="text-[14px] text-slate-700 font-bold space-y-2 leading-relaxed">
-              <li>??준�? ?�전???�좌?�을 ?�외??�????�고, ??좌석 ?�트 최�???밀�?</li>
-              <li>???�어 �? ???????�서�?먼�? ?�려 보내�?</li>
-              <li>??�?���??�서: 조수??�??�기!) ???�좌?????�전?????�렁??</li>
-              <li>??마무�? 무조�??�리부????��, ?�내 ?�정???�너?�리??�??��? ??��.</li>
+              <li>• 준비: 운전석 뒷좌석을 제외한 문 다 열고, 앞 좌석 시트 최대한 밀기.</li>
+              <li>• 에어 건: 앞 → 뒤 순서로 먼지 날려 보내기.</li>
+              <li>• 청소기 순서: 조수석(문 닫기!) → 뒷좌석 → 운전석 → 트렁크.</li>
+              <li>• 마무리: 무조건 유리부터 닦고, 실내 세정제(이너클리너)로 내부 닦기.</li>
             </ul>
 
-            <h4 className="font-black text-slate-800 text-[15px] mt-4 mb-2">2?�계: ?��? ?�차 (?�에???�래�?</h4>
+            <h4 className="font-black text-slate-800 text-[15px] mt-4 mb-2">2단계: 외부 세차 (위에서 아래로)</h4>
             <ul className="text-[14px] text-slate-700 font-bold space-y-2 leading-relaxed">
-              <li>??고압??& ?�건: ?�에???�래�?�?뿌린 ???�건 ?�포 (벌레/?�똥?� 버그?�리???�수).</li>
-              <li>????미트�? ?�건 ?�태?�서 ??먼�? ??�� (?�히 ?�제차는 분진 ?�문??�??�세??).</li>
-              <li>???�굼: 고압?�로 거품 ?�이 꼼꼼?�게 ?�구�?</li>
+              <li>• 고압수 & 폼건: 위에서 아래로 물 뿌린 뒤 폼건 살포 (벌레/새똥은 버그클리너 필수).</li>
+              <li>• 휠 미트질: 폼건 상태에서 휠 먼저 닦기 (특히 외제차는 분진 때문에 꼭 하세요!).</li>
+              <li>• 헹굼: 고압수로 거품 없이 꼼꼼하게 헹구기.</li>
             </ul>
 
-            <h4 className="font-black text-slate-800 text-[15px] mt-4 mb-2">3?�계: ?�라??& 마무�?/h4>
+            <h4 className="font-black text-slate-800 text-[15px] mt-4 mb-2">3단계: 드라이 & 마무리</h4>
             <ul className="text-[14px] text-slate-700 font-bold space-y-2 leading-relaxed">
-              <li>??물기 ?�거: ?�어 건으�??�새(그릴, 문틈) 물기 ?�리�?</li>
-              <li>???�???�용�? ?�리 ?�용 ?�?�로 ?�리부?? (?��? ??�� ?�???�면 ?�리 ?�러?�짐).</li>
-              <li>???��? ??��: 깨끗???�?�로 ?�장�???��, ?�하�??�스 칠하�?</li>
-              <li>???�테?? 문틈�??�렁??물기까�? ??��???�중???�끼가 ??껴요.</li>
-              <li className="mt-2">"?�차???�리부????�� ?�테?�과 ?�에???�래�? 꼬임?�는 ?�선???�명?�니??"</li>
+              <li>• 물기 제거: 에어 건으로 틈새(그릴, 문틈) 물기 날리기.</li>
+              <li>• 타월 사용법: 유리 전용 타월로 유리부터! (외부 닦던 타월 쓰면 유리 더러워짐).</li>
+              <li>• 외관 닦기: 깨끗한 타월로 도장면 닦고, 원하면 왁스 칠하기.</li>
+              <li>• 디테일: 문틈과 트렁크 물기까지 닦아야 나중에 이끼가 안 껴요.</li>
+              <li className="mt-2">"세차는 유리부터 닦는 디테일과 위에서 아래로, 꼬임없는 동선이 생명입니다!"</li>
             </ul>
           </motion.div>
 
@@ -2677,16 +2687,16 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
           <div className="space-y-4">
             <motion.div variants={item} className="bg-[#e2e8f0]/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white">
               <button 
-                onClick={() => speak("?�문가 꿀?�입?�다. 벌레?�거??버그?�리?? 묵�? ?�는 ?�리?�시�??�용?�세?? ?�차 ?�품 브랜?�는 bubble mate???�낙?��? 추천?�니??")}
+                onClick={() => speak("전문가 꿀팁입니다. 벌레제거는 버그클리너, 묵은 때는 프리워시를 사용하세요. 세차 용품 브랜드는 bubble mate나 소낙스를 추천합니다.")}
                 className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
               >
                 <Volume2 size={24} className="currentColor" />
               </button>
               <div className="text-center font-bold text-slate-800 text-[15px] leading-relaxed">
-                벌레?�거: 버그?�리?? 묵�???:?�리?�시<br/>
-                철분?�거?�시?�면 철분?�거???�세??br/>
-                ?�차 ?�품 브랜?�는 bubble mate, ?�낙?�꺼 ?�세??br/>
-                가격�???비해 bubble mate�??�말 괜찮?�니??
+                벌레제거: 버그클리너, 묵은때 :프리워시<br/>
+                철분제거하시려면 철분제거제 쓰세요<br/>
+                세차 용품 브랜드는 bubble mate, 소낙스꺼 쓰세요<br/>
+                가격대에 비해 bubble mate꺼 정말 괜찮습니다.
               </div>
             </motion.div>
             
@@ -2696,9 +2706,9 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
               className="bg-[#1e293b] text-white p-7 rounded-3xl shadow-xl border border-white/10 cursor-pointer group"
             >
               <h4 className="font-black text-emerald-400 text-sm mb-2 uppercase tracking-widest">Recommended Brand</h4>
-              <p className="text-lg font-bold leading-tight mb-4 text-white">가?�비?� ?�질??모두 ?��? bubble mate ?�차?�품 구경?�기</p>
+              <p className="text-lg font-bold leading-tight mb-4 text-white">가성비와 품질을 모두 잡은 bubble mate 세차용품 구경하기</p>
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs group-hover:gap-4 transition-all">
-                <span>공식�?바로가�?/span>
+                <span>공식몰 바로가기</span>
                 <ChevronRight size={14} />
               </div>
             </motion.div>
@@ -2708,4 +2718,3 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
-
