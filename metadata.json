@@ -1,0 +1,11 @@
+{
+  "name": "세차의 정석 (The Art of Car Wash)",
+  "description": "AI 세차 전문가 상담, 맞춤형 세차 가이드, 실시간 날씨 및 위치 정보를 제공하는 프리미엄 세차 관리 앱",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

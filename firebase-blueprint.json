@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and car details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "birthDate": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "carModel": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email"]
+    },
+    "ChatSession": {
+      "title": "AI Expert Chat Session",
+      "description": "A conversation thread with the AI Car Wash Expert",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "An individual message in a chat session",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionId", "role", "content"]
+    },
+    "Review": {
+      "title": "Service Review",
+      "description": "User review with matrix positioning and AI summary",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "carModel": { "type": "string" },
+        "pin": {
+          "type": "object",
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "actualTime": { "type": "number" },
+        "plannedTime": { "type": "number" },
+        "qualityIndex": { "type": "number" },
+        "aiSummary": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "pin", "actualTime", "aiSummary", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "chatSessions/{sessionId}": {
+      "schema": "ChatSession",
+      "description": "Expert advice sessions"
+    },
+    "chatSessions/{sessionId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Messages within a session"
+    },
+    "records/{userId}/userRecords/{recordId}": {
+      "schema": "ChatMessage",
+      "description": "Historical records of car wash inquiries"
+    },
+    "reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Submitted car wash reviews"
+    }
+  }
+}
