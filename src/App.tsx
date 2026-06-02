@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   LogIn, 
   UserPlus, 
@@ -232,6 +232,100 @@ export default function App() {
           }
         };
         processNaverLogin();
+      }
+    }
+
+    // Kakao Client-side Callback
+    if (typeof window !== 'undefined' && window.location.pathname.includes('/api/auth/kakao/callback')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const error = urlParams.get('error');
+
+      if (error) {
+        if (window.opener) {
+          window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error }, '*');
+          window.close();
+        }
+        return;
+      }
+
+      if (code) {
+        const processKakaoLogin = async () => {
+          try {
+            const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY;
+            
+            if (!clientId) {
+              throw new Error("카카오 클라이언트 ID가 없습니다.");
+            }
+
+            const redirectUri = window.location.hostname === 'localhost' 
+              ? 'http://localhost:5173/api/auth/kakao/callback' 
+              : 'https://properwaycar.vercel.app/api/auth/kakao/callback';
+
+            const tokenUrl = `https://kauth.kakao.com/oauth/token`;
+            const params = new URLSearchParams({
+              grant_type: 'authorization_code',
+              client_id: clientId,
+              redirect_uri: redirectUri,
+              code: code
+            });
+            
+            const proxyTokenUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(tokenUrl + '?' + params.toString())}`;
+            
+            const tokenRes = await fetch(proxyTokenUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            });
+            const tokenData = await tokenRes.json();
+            
+            if (tokenData.error) {
+              throw new Error(tokenData.error_description || "카카오 토큰 발급 실패");
+            }
+
+            const profileUrl = `https://kapi.kakao.com/v2/user/me`;
+            const proxyProfileUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(profileUrl)}`;
+            
+            const profileRes = await fetch(proxyProfileUrl, {
+              headers: { Authorization: `Bearer ${tokenData.access_token}` }
+            });
+            const profileData = await profileRes.json();
+
+            if (!profileData.id) {
+              throw new Error("카카오 프로필 조회 실패");
+            }
+
+            const user = {
+              id: String(profileData.id),
+              email: profileData.kakao_account?.email || '',
+              name: profileData.kakao_account?.profile?.nickname || '카카오 사용자',
+              photoURL: profileData.kakao_account?.profile?.profile_image_url || '',
+              provider: 'kakao'
+            };
+
+            if (window.opener) {
+              window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', user }, '*');
+              window.close();
+            } else {
+              localStorage.setItem('demo_user', JSON.stringify({
+                 uid: `kakao-${user.id}`,
+                 name: user.name,
+                 email: user.email,
+                 provider: 'kakao',
+                 createdAt: new Date()
+              }));
+              window.location.href = '/';
+            }
+          } catch (err: any) {
+            if (window.opener) {
+               window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error: err.message }, '*');
+               window.close();
+            } else {
+               alert("카카오 로그인 에러: " + err.message);
+               window.location.href = '/';
+            }
+          }
+        };
+        processKakaoLogin();
       }
     }
   }, []);
