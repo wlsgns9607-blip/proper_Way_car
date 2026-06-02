@@ -9,14 +9,6 @@ import { initializeFirestore } from 'firebase/firestore';
 
 let baseConfig: any = {};
 
-try {
-  // @ts-ignore - Dynamic import to handle missing file gracefully
-  const config = await import('../../firebase-applet-config.json').catch(() => ({ default: {} }));
-  baseConfig = config.default || config;
-} catch (e) {
-  console.debug("[Firebase] No config file found, falling back to env vars.", e);
-}
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || baseConfig.apiKey,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || baseConfig.authDomain,
