@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { 
   LogIn, 
   UserPlus, 
@@ -1125,9 +1125,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
         return;
       }
       
-      const protocol = window.location.protocol;
-      const host = window.location.host;
-      const redirectUri = `${protocol}//${host}/api/auth/naver/callback`;
+      const redirectUri = window.location.hostname === 'localhost' ? 'http://localhost:5173/api/auth/naver/callback' : 'https://properwaycar.vercel.app/api/auth/naver/callback';
       const state = Math.random().toString(36).substring(7);
       
       const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
