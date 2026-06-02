@@ -21,7 +21,7 @@ app.get("/api/auth/naver/url", (req, res) => {
   const clientId = process.env.VITE_NAVER_CLIENT_ID || process.env.NAVER_CLIENT_ID;
   
   // Get external redirect URI correctly in proxy environment
-  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
   const host = req.headers['x-forwarded-host'] || req.get('host');
   const redirectUri = `${protocol}://${host}/api/auth/naver/callback`;
 
@@ -120,7 +120,7 @@ app.get("/api/auth/kakao/url", (req, res) => {
   const clientId = process.env.VITE_KAKAO_CLIENT_ID || process.env.KAKAO_CLIENT_ID || process.env.KAKAO_REST_API_KEY;
   
   // Get external redirect URI correctly in proxy environment
-  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
   const host = req.headers['x-forwarded-host'] || req.get('host');
   const redirectUri = `${protocol}://${host}/api/auth/kakao/callback`;
 
@@ -160,7 +160,7 @@ app.get("/api/auth/kakao/callback", async (req, res) => {
     
     // Determine the redirect URI used in the authorize step
     // In AI Studio, we must match the EXACT URL registered in Kakao console
-    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
     const host = req.headers['x-forwarded-host'] || req.get('host');
     const redirectUri = `${protocol}://${host}/api/auth/kakao/callback`;
 

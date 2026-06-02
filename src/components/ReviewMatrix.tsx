@@ -218,7 +218,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
   } as const;
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 text-slate-900 overflow-hidden">
+    <div className="h-full flex flex-col bg-[#C1EBE9] text-slate-900 overflow-hidden">
       {/* Header */}
       <div className="bg-white px-6 py-5 flex items-center justify-between border-b border-slate-100 sticky top-0 z-20">
         <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-slate-600 transition-colors">

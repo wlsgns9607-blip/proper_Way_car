@@ -89,11 +89,22 @@ const callAI = async (contents: any[], systemInstruction: string) => {
 };
 
 const speak = (text: string) => {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang = 'ko-KR';
-  window.speechSynthesis.speak(msg);
+  if (typeof window === 'undefined') return;
+  if (!window.speechSynthesis) {
+    alert("현재 브라우저에서 음성 합성 기능을 지원하지 않습니다.");
+    return;
+  }
+  try {
+    console.log("TTS Speaking:", text);
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = 'ko-KR';
+    msg.rate = 1.0;
+    window.speechSynthesis.speak(msg);
+  } catch (error) {
+    console.error("TTS Error:", error);
+    alert("음성 출력 중 오류가 발생했습니다.");
+  }
 };
 
 // Global Animation Variants
@@ -111,6 +122,7 @@ const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 }
 } as const;
+
 
 export const OWNER_EMAIL = 'wlsgns9607@gmail.com';
 
@@ -333,15 +345,17 @@ export default function App() {
   const renderView = () => {
     switch (state.view) {
       case 'home': return <HomeScreen user={state.user} setView={setView} onOpenService={() => setModal('service_choice')} setState={setState} state={state} />;
-      case 'auth': return <AuthScreen onLogin={(u) => {
+      case 'auth': return <AuthScreen onBack={() => setView('home')} onLogin={(u) => {
         const nextModal = (state as any).pendingModal || 'login_success';
+        localStorage.setItem('demo_user', JSON.stringify(u)); // Save to localStorage to persist across refreshes
         setState(prev => ({ ...prev, user: u, view: 'home', modal: nextModal as any, pendingModal: null }));
       }} />;
     case 'chat': return <ChatScreen user={state.user} onBack={() => setView('home')} onPhoto={() => setView('photo_upload_ai')} onPhotoSelect={(f) => setState(prev => ({...prev, view: 'photo_upload_ai', pendingPhoto: f}))} title="AI세차전문가한테 물어보세요!!" allowAutoAI={true} chatType="ai" onNavigateToGuide={() => setView('guide')} />;
     case 'guide_query': {
       if (!state.user && !state.loading) {
-        return <AuthScreen onLogin={(u) => {
+        return <AuthScreen onBack={() => setView('home')} onLogin={(u) => {
           const nextModal = (state as any).pendingModal || 'login_success';
+          localStorage.setItem('demo_user', JSON.stringify(u)); // Save to localStorage
           setState(prev => ({ ...prev, user: u, view: 'guide_query', modal: nextModal as any, pendingModal: null }));
         }} />;
       }
@@ -507,7 +521,7 @@ export default function App() {
                   initial={{ scale: 0.95, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.95, opacity: 0 }}
-                  className="bg-white w-[300px] rounded-[1.5rem] shadow-2xl relative z-10 overflow-hidden flex flex-col items-center pt-8 pb-6 px-10"
+                  className="bg-white w-[85%] max-w-[320px] rounded-[1.5rem] shadow-2xl relative z-10 overflow-hidden flex flex-col items-center pt-8 pb-6 px-10"
                 >
                    <button 
                      onClick={() => setModal('none')}
@@ -575,7 +589,7 @@ export default function App() {
                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
                  animate={{ scale: 1, opacity: 1, y: 0 }}
                  exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                 className="bg-white w-[300px] rounded-[2rem] border-[4px] border-[#1ea08a] shadow-2xl relative z-10 flex flex-col items-center pt-12 pb-10 px-8 text-center"
+                 className="bg-white w-[85%] max-w-[320px] rounded-[2rem] border-[4px] border-[#1ea08a] shadow-2xl relative z-10 flex flex-col items-center pt-12 pb-10 px-8 text-center"
                >
                   {/* Icon Area */}
                   <div className="mb-8 relative">
@@ -633,7 +647,7 @@ export default function App() {
                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
                  animate={{ scale: 1, opacity: 1, y: 0 }}
                  exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                 className="bg-white w-[300px] rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] relative z-10 flex flex-col items-center pt-10 pb-8 px-6 text-center"
+                 className="bg-white w-[85%] max-w-[320px] rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] relative z-10 flex flex-col items-center pt-10 pb-8 px-6 text-center"
                >
                   {/* Close Button X */}
                   <button onClick={() => setModal('none')} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
@@ -760,12 +774,12 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="bg-white w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 max-h-[90vh] overflow-y-auto"
+        className="bg-[#C1EBE9] w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 max-h-[90vh] overflow-y-auto"
       >
         <div className="p-7 pb-2 flex justify-between items-center">
           <h3 className="text-lg font-black text-slate-800">내 차량 설정</h3>
-          <button onClick={onClose} className="p-2 text-slate-300 hover:text-slate-500 transition-colors">
-            <X size={24} />
+          <button onClick={onClose} className="p-2 text-slate-900 hover:text-black hover:scale-110 active:scale-95 transition-all">
+            <X size={24} strokeWidth={3} />
           </button>
         </div>
 
@@ -955,7 +969,7 @@ function SplashScreen({ onDismiss }: { onDismiss?: () => void }) {
   );
 }
 
-function AuthScreen({ onLogin }: { onLogin: (u: UserProfile) => void }) {
+function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, onBack?: () => void }) {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -1187,9 +1201,19 @@ function AuthScreen({ onLogin }: { onLogin: (u: UserProfile) => void }) {
   };
 
   return (
-    <div className="h-full flex flex-col p-8 bg-white pt-safe-16 overflow-y-auto">
+    <div className="h-full flex flex-col p-8 bg-white pt-safe-16 overflow-y-auto relative">
       <style dangerouslySetInnerHTML={{ __html: `.pt-safe-16 { padding-top: calc(env(safe-area-inset-top, 0px) + 4rem); }` }} />
-      <div className="mb-10">
+      
+      {onBack && (
+        <button 
+          onClick={onBack} 
+          className="absolute top-6 left-6 text-slate-400 hover:text-slate-700 transition-colors bg-slate-50 p-2 rounded-full z-10"
+        >
+          <ArrowLeft size={24} strokeWidth={2.5} />
+        </button>
+      )}
+
+      <div className="mb-10 mt-4">
         <h2 className="text-3xl font-black text-slate-800 whitespace-pre-line leading-snug">
           {mode === 'login' ? '반가워요!\n다시 돌아오셨네요' : '세차의 정석\n우리 함께 시작해요'}
         </h2>
@@ -1565,29 +1589,29 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         {user && (
           <motion.div 
             variants={item}
-            className="bg-[#f0f9ff] border-2 border-[#bae6fd] rounded-[2rem] p-5 flex items-center gap-5 shadow-sm"
+            className="bg-[#f0f9ff] border-2 border-[#bae6fd] rounded-[2rem] p-4 md:p-5 flex items-center gap-3 md:gap-5 shadow-sm"
           >
             {/* Left: Car Photo */}
-            <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white border border-slate-100 shrink-0 shadow-sm flex items-center justify-center p-4">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden bg-white border border-slate-100 shrink-0 shadow-sm flex items-center justify-center p-3 md:p-4">
               {user.carPhotoUrl ? (
                 <img src={user.carPhotoUrl} alt="차량 사진" className="w-full h-full object-cover rounded-xl" referrerPolicy="no-referrer" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300 rounded-xl">
-                  <Car size={36} />
+                  <Car size={32} />
                 </div>
               )}
             </div>
 
             {/* Right: Info */}
-            <div className="flex flex-col gap-1 flex-1">
+            <div className="flex flex-col gap-1 flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-xl">🏆</span>
-                <span className="font-extrabold text-slate-800 text-lg tracking-tight">
+                <span className="text-lg md:text-xl">🏆</span>
+                <span className="font-extrabold text-slate-800 text-[15px] md:text-lg tracking-tight truncate">
                   {latestBadge ? latestBadge.label : "명예 대기 중"}
                 </span>
               </div>
-              <p className="text-[15px] font-black text-slate-700 leading-tight">
-                {user.carModel || "차량"} 고객님 오신 걸<br/>
+              <p className="text-[13px] md:text-[15px] font-black text-slate-700 leading-tight">
+                {user.carModel || "차량"} 고객님<br/>
                 환영합니다
               </p>
             </div>
@@ -1700,12 +1724,26 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
           <ServiceCard 
             icon={<div className="bg-[#e6f4f2] p-3.5 rounded-full text-[#1ea08a]"><Navigation size={22} fill="currentColor" strokeWidth={1.5}/></div>}
             label="빠른위치서비스"
-            onClick={onOpenService}
+            onClick={() => {
+              if (!user) {
+                alert("이 서비스를 이용하시려면 먼저 로그인해주세요!");
+                setView('auth');
+              } else {
+                onOpenService();
+              }
+            }}
           />
           <ServiceCard 
             icon={<div className="bg-[#f0f9ff] p-3.5 rounded-full text-[#3b82f6]"><Star size={22} fill="currentColor" strokeWidth={1.5}/></div>}
             label="매트릭스 리뷰"
-            onClick={() => setView('review_matrix')}
+            onClick={() => {
+              if (!user) {
+                alert("리뷰를 작성하시려면 먼저 로그인해주세요!");
+                setView('auth');
+              } else {
+                setView('review_matrix');
+              }
+            }}
           />
           <ServiceCard 
             icon={user?.carPhotoUrl ? (
@@ -1715,20 +1753,22 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
             ) : (
               <div className="bg-[#fff7ed] p-3.5 rounded-full text-[#f97316]"><Car size={22} fill="currentColor" strokeWidth={1.5}/></div>
             )}
-            label="내 차량 설정"
+            label={user ? "내 차량 수정" : "내 차량 설정"}
             onClick={() => {
-              if (!user) {
-                alert("차량 설정을 하시려면 먼저 로그인해주세요!");
-                setView('auth');
-              } else {
-                setState((prev: any) => ({ ...prev, modal: 'vehicle_config' }));
-              }
+              setState((prev: any) => ({ ...prev, modal: 'vehicle_config' }));
             }}
           />
           <ServiceCard 
             icon={<div className="bg-[#fefce8] p-3.5 rounded-full text-[#ca8a04]"><Lightbulb size={22} fill="currentColor" strokeWidth={1.5}/></div>}
             label="전문가 노하우"
-            onClick={() => setView('guide')}
+            onClick={() => {
+              if (!user) {
+                alert("전문가 노하우를 보시려면 먼저 로그인해주세요!");
+                setView('auth');
+              } else {
+                setView('guide');
+              }
+            }}
           />
         </motion.div>
 
@@ -2478,7 +2518,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
               {reviews.map((review) => (
                 <motion.div
                   key={review.id}
-                  className="bg-white p-7 rounded-[2.5rem] border-2 border-slate-200 shadow-lg space-y-5 h-full flex flex-col"
+                  className="bg-[#C1EBE9] p-7 rounded-[2.5rem] border-2 border-slate-200 shadow-lg space-y-5 h-full flex flex-col"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -2561,8 +2601,8 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
   // 1. MAIN_CAR_IMAGE: 화면 상단의 큰 메인 이미지입니다.
   // 2. SUB_TOOL_IMAGE: 우측 하단에 떠 있는 작은 서브 이미지입니다.
   // ==========================================
-  const MAIN_CAR_IMAGE = "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?q=80&w=1000&auto=format&fit=crop"; 
-  const SUB_TOOL_IMAGE = "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?q=80&w=1000&auto=format&fit=crop";
+  const MAIN_CAR_IMAGE = new URL('../img/img_001.jpg', import.meta.url).href;
+  const SUB_TOOL_IMAGE = new URL('../img/img_002.jpg', import.meta.url).href;
 
   return (
     <div className="h-full flex flex-col bg-[#ebf5f3] overflow-y-auto">
@@ -2605,8 +2645,14 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
 
         {/* Guide Content Sections */}
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2">
-            <div className="flex justify-between items-start mb-4">
+          <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2 group">
+            <button 
+              onClick={() => speak("세차 고수의 효율 200퍼센트 순서 가이드입니다. 1단계 실내 세차. 운전석 뒷좌석을 제외한 문을 다 열고, 앞 좌석 시트를 최대한 밉니다. 에어건으로 앞, 뒤 순서로 먼지를 날려보내고, 조수석, 뒷좌석, 운전석, 트렁크 순서로 청소기를 돌립니다. 실내 마무리는 무조건 유리부터 닦고 실내 세정제로 내부를 닦습니다. 2단계 외부 세차. 위에서 아래로 고압수와 폼건을 뿌린 뒤, 거품이 있는 상태에서 휠을 먼저 닦아줍니다. 이후 고압수로 꼼꼼히 헹굽니다. 3단계 드라이 및 마무리. 에어건으로 틈새 물기를 날리고, 유리 전용 타월로 유리부터 닦습니다. 이후 깨끗한 타월로 도장면을 닦고, 문틈과 트렁크 물기까지 완벽하게 제거하여 이끼를 방지합니다. 꼬임 없는 동선이 생명입니다!")}
+              className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
+            >
+              <Volume2 size={24} className="currentColor" />
+            </button>
+            <div className="flex justify-between items-start mb-4 pr-12">
               <h4 className="font-black text-slate-800 text-[15px] leading-tight">
                 세차 고수의 '효율 200%' 순서 가이드<br/>
                 1단계: 실내 세차 (본넷 온도 낮추기)
@@ -2642,9 +2688,9 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
             <motion.div variants={item} className="bg-[#e2e8f0]/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white">
               <button 
                 onClick={() => speak("전문가 꿀팁입니다. 벌레제거는 버그클리너, 묵은 때는 프리워시를 사용하세요. 세차 용품 브랜드는 bubble mate나 소낙스를 추천합니다.")}
-                className="absolute top-4 right-4 p-1 hover:bg-slate-200 rounded-full transition-colors"
+                className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
               >
-                <Volume2 size={24} className="text-slate-900" />
+                <Volume2 size={24} className="currentColor" />
               </button>
               <div className="text-center font-bold text-slate-800 text-[15px] leading-relaxed">
                 벌레제거: 버그클리너, 묵은때 :프리워시<br/>
