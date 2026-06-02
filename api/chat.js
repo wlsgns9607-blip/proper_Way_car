@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
@@ -25,7 +25,7 @@ export default async function handler(req: any, res: any) {
 
     const text = response.text;
     res.status(200).json({ text });
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({ error: error.message || 'Unknown AI error' });
   }
 }

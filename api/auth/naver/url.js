@@ -1,4 +1,4 @@
-export default function handler(req: any, res: any) {
+export default function handler(req, res) {
   try {
     const clientId = process.env.VITE_NAVER_CLIENT_ID || process.env.NAVER_CLIENT_ID;
     const protocol = (req.headers && req.headers['x-forwarded-proto']) ? req.headers['x-forwarded-proto'] : 'https';
@@ -13,7 +13,7 @@ export default function handler(req: any, res: any) {
     const naverAuthUrl = \https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=\&redirect_uri=\&state=\\;
 
     res.status(200).json({ url: naverAuthUrl });
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({ error: err.message || 'Server crashed' });
   }
 }
