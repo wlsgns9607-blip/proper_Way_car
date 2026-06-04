@@ -2032,6 +2032,21 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
   const sessionId = guestSessionId;
   const subCol = chatType === "ai" ? "ai_messages" : chatType === "expert" ? "expert_messages" : "messages";
 
+  // Check API connection on mount
+  useEffect(() => {
+    if (chatType === 'ai') {
+      fetch('/api/ai-check')
+        .then(async (res) => {
+          if (!res.ok) {
+            alert('api연결안됬읍니다');
+          }
+        })
+        .catch(() => {
+          alert('api연결안됬읍니다');
+        });
+    }
+  }, [chatType]);
+
   // Load messages
   useEffect(() => {
     if (!db || !sessionId) {
