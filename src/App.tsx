@@ -1492,29 +1492,9 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
                 <span className="text-xs font-bold text-slate-600">Google Login</span>
               </button>
 
-              <button 
-                type="button"
-                onClick={handleNaverLogin}
-                disabled={loading}
-                className="flex items-center justify-center gap-2 bg-[#03C75A] p-3.5 rounded-2xl hover:opacity-90 transition-opacity shadow-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <div className="w-5 h-5 flex items-center justify-center bg-white rounded-sm">
-                   <span className="text-[#03C75A] font-black text-[10px]">N</span>
-                </div>
-                <span className="text-xs font-bold text-white">Naver Login</span>
-              </button>
+              
 
-              <button 
-                type="button"
-                onClick={handleKakaoLogin}
-                disabled={loading}
-                className="flex items-center justify-center gap-2 bg-[#FEE500] p-3.5 rounded-2xl hover:opacity-90 transition-opacity shadow-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <div className="w-5 h-5 flex items-center justify-center text-[#3c1e1e]">
-                   <MessageCircle size={14} fill="currentColor" />
-                </div>
-                <span className="text-xs font-bold text-[#3c1e1e]">Kakao Login</span>
-              </button>
+              
             </div>
           </div>
         )}
