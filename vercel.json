@@ -1,21 +1,5 @@
-﻿{
+{
   "rewrites": [
-    {
-      "source": "/api/naver-proxy/:match*",
-      "destination": "https://nid.naver.com/:match*"
-    },
-    {
-      "source": "/api/naver-openapi-proxy/:match*",
-      "destination": "https://openapi.naver.com/:match*"
-    },
-    {
-      "source": "/api/kakao-proxy/:match*",
-      "destination": "https://kauth.kakao.com/:match*"
-    },
-    {
-      "source": "/api/kakao-openapi-proxy/:match*",
-      "destination": "https://kapi.kakao.com/:match*"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
