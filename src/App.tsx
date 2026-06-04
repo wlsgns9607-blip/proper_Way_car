@@ -1228,7 +1228,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
   const handleNaverLogin = async () => {
     if (loading) return;
     try {
-      const clientId = import.meta.env.VITE_NAVER_CLIENT_ID;
+      const clientId = import.meta.env.VITE_NAVER_CLIENT_ID || 'YvjDJahZ9cHp3Bd8CG72';
       if (!clientId) {
         alert("네이버 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_NAVER_CLIENT_ID를 설정해주세요.");
         return;
@@ -1256,7 +1256,7 @@ function AuthScreen({ onLogin, onBack }: { onLogin: (u: UserProfile) => void, on
   const handleKakaoLogin = async () => {
     if (loading) return;
     try {
-      const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY;
+      const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY || 'c934ba91c61cc67f5a0c4f422b3717dc';
       if (!clientId) {
         alert("카카오 로그인이 활성화되지 않았습니다.\n\n앱 설정(Settings) 메뉴에서 VITE_KAKAO_CLIENT_ID를 설정해주세요.");
         return;
