@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   LogIn, 
   UserPlus, 
@@ -2154,9 +2154,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
           }
         } catch (aiErr: any) {
           console.error("AI Response Error:", aiErr);
-          const errorMsg = aiErr.message?.includes('503') || aiErr.message?.includes('demand')
-            ? "현재 인공지능 서버의 부하가 많아 답변이 지연되고 있습니다. 잠시 후 다시 시도해주시거나, '실무자 상담' 메뉴를 이용해주세요."
-            : "AI 답변을 가져오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+          const errorMsg = "api연결안됬읍니다";
             
           setLocalMessages(prev => [...prev, { 
             id: 'err-' + Date.now(), 
