@@ -169,8 +169,8 @@ export default function App() {
       if (code && state) {
         const processNaverLogin = async () => {
           try {
-            const clientId = import.meta.env.VITE_NAVER_CLIENT_ID;
-            const clientSecret = import.meta.env.VITE_NAVER_CLIENT_SECRET || import.meta.env.NAVER_CLIENT_SECRET;
+            const clientId = import.meta.env.VITE_NAVER_CLIENT_ID || 'YvjDJahZ9cHp3Bd8CG72';
+            const clientSecret = import.meta.env.VITE_NAVER_CLIENT_SECRET || import.meta.env.NAVER_CLIENT_SECRET || 'f3qAWzT2IM';
             
             if (!clientId || !clientSecret) {
               throw new Error("클라이언트 ID 또는 Secret이 없습니다. 환경변수 설정을 확인하세요.");
@@ -256,7 +256,7 @@ export default function App() {
       if (code) {
         const processKakaoLogin = async () => {
           try {
-            const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY;
+            const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID || import.meta.env.KAKAO_REST_API_KEY || 'c934ba91c61cc67f5a0c4f422b3717dc';
             
             if (!clientId) {
               throw new Error("카카오 클라이언트 ID가 없습니다.");
