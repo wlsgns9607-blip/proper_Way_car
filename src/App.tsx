@@ -2879,7 +2879,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
           <div className="space-y-4">
             <motion.div variants={item} className="bg-[#e2e8f0]/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white">
               <button 
-                onClick={() => speak("전문가 꿀팁입니다. 벌레제거는 버그클리너, 묵은 때는 프리워시를 사용하세요. 세차 용품 브랜드는 bubble mate나 소낙스를 추천합니다.")}
+                onClick={() => speak("전문가 꿀팁입니다. 벌레제거는 버그클리너, 묵은 때는 프리워시를 사용하세요. 세차 용품 브랜드는 bubble mate, 소낙스, 더클래스를 추천합니다.")}
                 className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
               >
                 <Volume2 size={24} className="currentColor" />
@@ -2887,7 +2887,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
               <div className="text-center font-bold text-slate-800 text-[15px] leading-relaxed">
                 벌레제거: 버그클리너, 묵은때 :프리워시<br/>
                 철분제거하시려면 철분제거제 쓰세요<br/>
-                세차 용품 브랜드는 bubble mate, 소낙스꺼 쓰세요<br/>
+                세차 용품 브랜드는 bubble mate, 소낙스, 더클래스꺼 쓰세요<br/>
                 가격대에 비해 bubble mate꺼 정말 괜찮습니다.
               </div>
             </motion.div>
