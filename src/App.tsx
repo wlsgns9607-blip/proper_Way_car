@@ -2195,7 +2195,19 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
   }, [displayMessages]);
 
   return (
-    <div className="h-full flex flex-col bg-[#ebf5f3]">
+    <div className="h-full flex flex-col bg-[#ebf5f3] relative">
+      {/* Loading Overlay for AI */}
+      {isLoading && chatType === 'ai' && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+           <div className="bg-white px-8 py-8 rounded-[2rem] shadow-2xl flex flex-col items-center gap-5">
+             <div className="w-16 h-16 border-8 border-slate-100 border-t-[#1ea08a] rounded-full animate-spin"></div>
+             <div className="text-center">
+               <p className="font-black text-slate-800 text-[19px] mb-1">AI 세차박사가 답변 중입니다...</p>
+               <p className="text-slate-500 text-[14px] font-bold">잠시만 기다려주세요 (약 3~5초 소요)</p>
+             </div>
+           </div>
+        </div>
+      )}
       {/* Header matching provided image */}
       <div className="bg-white px-6 py-5 pt-safe-5 flex items-center justify-center border-b border-slate-100 sticky top-0 z-20">
         <style dangerouslySetInnerHTML={{ __html: `.pt-safe-5 { padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem); }` }} />
@@ -2287,7 +2299,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
               </div>
             </motion.div>
           ))}
-          {isLoading && <div className="self-start text-[11px] font-black text-slate-400 bg-white/50 px-4 py-2 rounded-full animate-pulse ml-4">기록중...</div>}
+          {isLoading && chatType !== 'ai' && <div className="self-start text-[11px] font-black text-slate-400 bg-white/50 px-4 py-2 rounded-full animate-pulse ml-4">기록중...</div>}
         </div>
       </div>
 
