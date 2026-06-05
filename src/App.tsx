@@ -2847,17 +2847,25 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2 group">
             <button 
-              onClick={() => speak("세차 고수의 효율 200퍼센트 순서 가이드입니다. 1단계 실내 세차. 운전석 뒷좌석을 제외한 문을 다 열고, 앞 좌석 시트를 최대한 밉니다. 에어건으로 앞, 뒤 순서로 먼지를 날려보내고, 조수석, 뒷좌석, 운전석, 트렁크 순서로 청소기를 돌립니다. 실내 마무리는 무조건 유리부터 닦고 실내 세정제로 내부를 닦습니다. 2단계 외부 세차. 위에서 아래로 고압수와 폼건을 뿌린 뒤, 거품이 있는 상태에서 휠을 먼저 닦아줍니다. 이후 고압수로 꼼꼼히 헹굽니다. 3단계 드라이 및 마무리. 에어건으로 틈새 물기를 날리고, 유리 전용 타월로 유리부터 닦습니다. 이후 깨끗한 타월로 도장면을 닦고, 문틈과 트렁크 물기까지 완벽하게 제거하여 이끼를 방지합니다. 꼬임 없는 동선이 생명입니다!")}
+              onClick={() => speak("세차 실무자의 핵심 철학입니다. 3시간씩 땀 빼는 디테일링 세차를 하는 사람은 4퍼센트도 안 됩니다. 우리의 목표는 1시간 30분 컷입니다! 쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 최고의 퀄리티를 뽑아내는 확실한 방법을 알려드립니다. 1단계 실내 세차. 운전석 뒷좌석을 제외한 문을 다 열고, 앞 좌석 시트를 최대한 밉니다. 에어건으로 앞, 뒤 순서로 먼지를 날려보내고, 조수석, 뒷좌석, 운전석, 트렁크 순서로 청소기를 돌립니다. 2단계 외부 세차. 위에서 아래로 고압수와 폼건을 뿌린 뒤, 거품이 있는 상태에서 휠을 먼저 닦아줍니다. 3단계 드라이 및 마무리. 에어건으로 틈새 물기를 날리고, 유리 전용 타월로 유리부터 닦습니다. 문틈과 트렁크 물기까지 완벽하게 제거하여 이끼를 방지합니다. 명심하세요! 세차의 생명은 디테일이 아니라 동선 꼬임 없는 압도적 효율입니다!")}
               className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
             >
               <Volume2 size={24} className="currentColor" />
             </button>
             <div className="flex justify-between items-start mb-4 pr-12">
-              <h4 className="font-black text-slate-800 text-[15px] leading-tight">
-                세차 고수의 '효율 200%' 순서 가이드<br/>
-                1단계: 실내 세차 (본넷 온도 낮추기)
+              <h4 className="font-black text-slate-800 text-[16px] leading-tight">
+                세차 고수의 '1시간 30분 컷' 압도적 효율 가이드
               </h4>
             </div>
+
+            <div className="mb-5 bg-[#1ea08a]/10 p-4 rounded-xl border border-[#1ea08a]/20 shadow-sm">
+              <p className="text-[13px] font-black text-[#157766] leading-relaxed">
+                💡 실무자의 핵심 철학<br/>
+                "3시간씩 땀 빼며 디테일링 세차를 하는 사람은 전체의 4%도 안 됩니다. 우리의 목표는 1시간 30분 컷!<br/>쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 퀄리티를 뽑아내는 '가장 빠르고 확실한 방법'을 알려드립니다."
+              </p>
+            </div>
+
+            <h4 className="font-black text-slate-800 text-[15px] mt-2 mb-2">1단계: 실내 세차 (본넷 온도 낮추기)</h4>
             
             <ul className="text-[14px] text-slate-700 font-bold space-y-2 leading-relaxed">
               <li>• 준비: 운전석 뒷좌석을 제외한 문 다 열고, 앞 좌석 시트 최대한 밀기.</li>
@@ -2879,7 +2887,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
               <li>• 타월 사용법: 유리 전용 타월로 유리부터! (외부 닦던 타월 쓰면 유리 더러워짐).</li>
               <li>• 외관 닦기: 깨끗한 타월로 도장면 닦고, 원하면 왁스 칠하기.</li>
               <li>• 디테일: 문틈과 트렁크 물기까지 닦아야 나중에 이끼가 안 껴요.</li>
-              <li className="mt-3 font-black text-rose-600 text-[15px] bg-rose-50 p-3 rounded-xl border-2 border-rose-100 shadow-sm">"세차는 유리부터 닦는 디테일과 위에서 아래로, 꼬임없는 동선이 생명입니다!"</li>
+              <li className="mt-3 font-black text-rose-600 text-[15px] bg-rose-50 p-3 rounded-xl border-2 border-rose-100 shadow-sm">"명심하세요! 세차의 생명은 무의미한 디테일이 아니라, 동선 꼬임 없는 '압도적 효율'입니다."</li>
             </ul>
           </motion.div>
 
