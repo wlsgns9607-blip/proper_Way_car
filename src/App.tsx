@@ -2169,15 +2169,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
           }
         } catch (aiErr: any) {
           console.error("AI Response Error:", aiErr);
-          const errorMsg = "api연결안됬읍니다";
-            
-          setLocalMessages(prev => [...prev, { 
-            id: 'err-' + Date.now(), 
-            role: 'model', 
-            content: errorMsg, 
-            timestamp: new Date().toISOString(), 
-            roleLabel: '알림' 
-          }]);
+          alert("현재 세차 AI 전문 서버와 연결할 수 없습니다.\n잠시 후 다시 시도해 주세요. (API 연동 준비 중)");
         }
       } 
     } catch (error: any) {
