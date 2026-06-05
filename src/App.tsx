@@ -2803,7 +2803,15 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-slate-600">
           <ChevronLeft size={24} />
         </button>
-        <h2 className="text-[17px] font-black text-slate-800 absolute left-1/2 -translate-x-1/2">세차실무자의 노하우</h2>
+        <h2 className="text-[17px] font-black text-slate-800 absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+          세차실무자의 노하우
+          <button 
+            onClick={() => speak("세차 실무자의 노하우 페이지입니다. 아래에서 세차 고수의 효율적인 세차 순서와 꿀팁을 확인해 보세요.")} 
+            className="text-[#1ea08a] bg-[#1ea08a]/10 p-1 rounded-full hover:scale-110 transition-transform active:scale-95"
+          >
+            <Volume2 size={16} strokeWidth={3} />
+          </button>
+        </h2>
         <div className="w-10" />
       </div>
 
