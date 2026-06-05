@@ -2871,7 +2871,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
               <li>• 타월 사용법: 유리 전용 타월로 유리부터! (외부 닦던 타월 쓰면 유리 더러워짐).</li>
               <li>• 외관 닦기: 깨끗한 타월로 도장면 닦고, 원하면 왁스 칠하기.</li>
               <li>• 디테일: 문틈과 트렁크 물기까지 닦아야 나중에 이끼가 안 껴요.</li>
-              <li className="mt-2">"세차는 유리부터 닦는 디테일과 위에서 아래로, 꼬임없는 동선이 생명입니다!"</li>
+              <li className="mt-3 font-black text-rose-600 text-[15px] bg-rose-50 p-3 rounded-xl border-2 border-rose-100 shadow-sm">"세차는 유리부터 닦는 디테일과 위에서 아래로, 꼬임없는 동선이 생명입니다!"</li>
             </ul>
           </motion.div>
 
