@@ -2847,7 +2847,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2 group">
             <button 
-              onClick={() => speak("세차 실무자의 핵심 철학입니다. 3시간씩 땀 빼는 디테일링 세차를 하는 사람은 4퍼센트도 안 됩니다. 우리의 목표는 1시간 30분 컷입니다! 쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 최고의 퀄리티를 뽑아내는 확실한 방법을 알려드립니다. 1단계 실내 세차. 운전석 뒷좌석을 제외한 문을 다 열고, 앞 좌석 시트를 최대한 밉니다. 에어건으로 앞, 뒤 순서로 먼지를 날려보내고, 조수석, 뒷좌석, 운전석, 트렁크 순서로 청소기를 돌립니다. 2단계 외부 세차. 위에서 아래로 고압수와 폼건을 뿌린 뒤, 거품이 있는 상태에서 휠을 먼저 닦아줍니다. 3단계 드라이 및 마무리. 에어건으로 틈새 물기를 날리고, 유리 전용 타월로 유리부터 닦습니다. 문틈과 트렁크 물기까지 완벽하게 제거하여 이끼를 방지합니다. 명심하세요! 세차의 생명은 디테일이 아니라 동선 꼬임 없는 압도적 효율입니다!")}
+              onClick={() => speak("세차 실무자의 핵심 철학입니다. 3시간씩 땀 빼는 디테일링 세차를 하는 사람은 4퍼센트도 안 됩니다. 우리의 목표는 1시간 30분 컷입니다! 쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 최고의 퀄리티를 뽑아내는 확실한 방법을 알려드립니다.")}
               className="absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
             >
               <Volume2 size={24} className="currentColor" />
