@@ -2850,7 +2850,7 @@ function ExpertGuideScreen({ onBack }: { onBack: () => void }) {
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <motion.div className="bg-white/80 backdrop-blur p-7 rounded-3xl relative shadow-md border border-white md:row-span-2 group">
             <button 
-              onClick={() => speak("세차 실무자의 핵심 철학입니다. 3시간씩 땀 빼는 디테일링 세차를 하는 사람은 4퍼센트도 안 됩니다. 우리의 목표는 1시간 30분 컷입니다! 쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 최고의 퀄리티를 뽑아내는 확실한 방법을 알려드립니다.")}
+              onClick={() => speak("저는 디테일링 매장 2년 경력 있습니다. 세차 실무자의 핵심 철학입니다. 3시간씩 땀 빼는 디테일링 세차를 하는 사람은 4퍼센트도 안 됩니다. 우리의 목표는 1시간 30분 컷입니다! 쓸데없는 과정은 과감히 버리고, 꼬임 없는 동선으로 최소 시간에 최고의 퀄리티를 뽑아내는 확실한 방법을 알려드립니다.")}
               className="group absolute top-4 right-4 p-2 bg-slate-100/50 hover:bg-[#1ea08a] hover:text-white hover:scale-110 rounded-full transition-all duration-300 z-20 cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
             >
               <Volume2 size={24} className="currentColor" />
