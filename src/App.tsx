@@ -970,7 +970,7 @@ function VehicleConfigModal({ user, onClose, onSave, onAuthRequired }: { user: U
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="bg-[#C1EBE9] w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 max-h-[90vh] overflow-y-auto"
+        className="bg-[#D1D9D9] w-full rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 max-h-[90vh] overflow-y-auto"
       >
         <div className="p-7 pb-2 flex justify-between items-center">
           <h3 className="text-lg font-black text-slate-800">내 차량 설정</h3>
@@ -2702,7 +2702,7 @@ function ExpertAdminDashboard({ user, onBack, onSelectSession }: { user: UserPro
               {reviews.map((review) => (
                 <motion.div
                   key={review.id}
-                  className="bg-[#C1EBE9] p-7 rounded-[2.5rem] border-2 border-slate-200 shadow-lg space-y-5 h-full flex flex-col"
+                  className="bg-[#D1D9D9] p-7 rounded-[2.5rem] border-2 border-slate-200 shadow-lg space-y-5 h-full flex flex-col"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
