@@ -1759,7 +1759,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex-1 overflow-y-auto flex flex-col p-6 gap-6 [&>*]:shrink-0"
+        className="flex-1 overflow-y-auto flex flex-col p-6 pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] gap-6 [&>*]:shrink-0"
       >
         {/* User Summary Card (Main Page) */}
         {user && (
@@ -2210,15 +2210,19 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
         </div>
       )}
       {/* Header matching provided image */}
-      <div className="bg-white px-6 py-5 pt-safe-5 flex items-center justify-center border-b border-slate-100 sticky top-0 z-20">
+      <div className="bg-white px-6 py-5 pt-safe-5 flex items-center justify-between border-b border-slate-100 sticky top-0 z-20">
         <style dangerouslySetInnerHTML={{ __html: `.pt-safe-5 { padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem); }` }} />
-        <h2 className="text-[17px] font-black text-slate-800 pointer-events-none whitespace-nowrap">
+        <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-slate-600 transition-colors relative z-30">
+          <ChevronLeft size={24} />
+        </button>
+        <h2 className="text-[17px] font-black text-slate-800 absolute left-1/2 -translate-x-1/2 pointer-events-none whitespace-nowrap">
            {title}
         </h2>
+        <div className="w-10"></div> {/* Spacer for perfect centering */}
         {chatType !== 'ai' && user?.email !== 'wlsgns9607@gmail.com' && (
           <button 
             onClick={onPhoto}
-            className="absolute right-6 w-10 h-10 bg-[#002f6c] rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-transform"
+            className="absolute right-6 w-10 h-10 bg-[#002f6c] rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-transform z-30"
           >
              <Plus size={20} strokeWidth={4} />
           </button>
