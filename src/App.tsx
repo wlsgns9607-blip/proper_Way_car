@@ -69,23 +69,32 @@ import Markdown from 'react-markdown';
 import { ReviewMatrix } from './components/ReviewMatrix';
 
 const callAI = async (contents: any[], systemInstruction: string) => {
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents, systemInstruction })
-    });
-    
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || `Server Error (${res.status})`);
-    }
-    
-    return data;
-  } catch (err: any) {
-    console.error("AI Proxy Error:", err);
-    throw err;
+  // 모의 지연 시간 (1.5초)
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // 마지막 사용자의 메시지 가져오기
+  const lastMessage = contents[contents.length - 1];
+  const userText = lastMessage?.parts?.[0]?.text || "";
+  
+  // 질문 1번 모범 답변
+  if (userText.includes("동선") || userText.includes("꼬이지") || userText.includes("빨리")) {
+    return {
+      text: `가장 효율적인 프로의 동선은 **'선(先) 실내, 후(後) 외판'**입니다. 베이에 들어가기 전 드라잉 존에 차를 대고 엔진열을 식히는 동안 실내 세차를 먼저 마스터하세요. 순서는 다음과 같이 구체적으로 움직여야 동선이 안 꼬입니다.
+
+준비 단계: 차량의 문을 다 열고 매트를 전부 탈거해 세척기로 보냅니다.
+
+에어건/청소기 공정 (조수석 라인 시작): 에어건 먼지 몰이는 앞에서 뒤로 진행합니다. 먼저 [조수석] 대시보드와 틈새를 에어로 불어 먼지를 뒤로 보낸 뒤 청소기를 돌리고, 바로 뒤로 넘어가 [조수석 뒷자리] 바닥에 모인 먼지를 청소기로 흡입합니다. 이쪽 라인이 끝나면 먼지가 다시 들어가지 않도록 문을 꼭 닫아주세요.
+
+운전석 라인 마무리: 반대편으로 넘어가 [운전석] 기어봉, 송풍구, 안전벨트 틈새를 에어로 불어 뒤로 밀어내고 청소기질을 한 뒤, 마지막으로 **[운전석 뒷자리]**로 넘어가 모인 이물질을 청소기로 싹 빨아들입니다. 마찬가지로 끝난 자리는 바로 문을 닫아줍니다.
+
+이렇게 실내를 완벽히 끝내고 문을 다 닫으면 엔진룸과 휠 열이 안전하게 식어 있습니다. 이제 베이로 진입해 대기 시간 없이 바로 휠 세정 -> 고압수 -> 미트질 -> 고압수로 이어가면 시간과 동선 낭비를 완벽하게 잡을 수 있습니다.`
+    };
   }
+
+  // 그 외의 질문이 들어왔을 때의 기본 답변
+  return {
+    text: "현재 세차 AI 전문 기능은 **포트폴리오 시연 모드**로 작동 중입니다.\n\n예시로 **'동선이 꼬이지 않고 빨리할 수 있는 세차 방법을 알려줘'** 라고 질문해 보시면 전문가 수준의 고퀄리티 답변 샘플을 확인하실 수 있습니다!"
+  };
 };
 
 const speak = (text: string) => {
