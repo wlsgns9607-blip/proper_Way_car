@@ -238,7 +238,8 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
         className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 flex flex-col gap-6 md:gap-8 pb-20 scroll-smooth"
       >
         
-        {/* 0. Live Badge Preview */}
+        {/* 0. Live Badge Preview (기획자님 요청으로 모바일/웹 모두 숨김 처리) */}
+        {/* 
         {pin && (
           <motion.section 
             variants={itemFade}
@@ -266,6 +267,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             </div>
           </motion.section>
         )}
+        */}
 
         {/* 1. Matrix Area */}
         <motion.section variants={itemFade} className="space-y-4 max-w-3xl mx-auto w-full">
