@@ -68,6 +68,40 @@ import type { UserProfile, AppState, ChatMessage } from './types';
 import Markdown from 'react-markdown';
 import { ReviewMatrix } from './components/ReviewMatrix';
 
+const AI_SUGGESTED_QUESTIONS = [
+  "동선이 꼬이지 않고 빨리하는 세차 법",
+  "먼지 털 때 가장 빠르고 디테일한 방법",
+  "30분 초고속 세차 방법",
+  "나무 수액 제거법",
+  "새똥 지우는 법",
+  "벌레 사체 제거하기",
+  "가죽 시트 관리법",
+  "가장 효과적인 고압수 각도",
+  "가성비 세차 방법",
+  "엔진룸 청소해도 괜찮나요?",
+  "타이어 갈변 해결법",
+  "매트 세척건조기 사용 팁",
+  "잔기스 컴파운드로 지워지나요?",
+  "자동세차 자주 돌리면 망가지나요?",
+  "겨울철 세차 꿀팁",
+  "개인 용품 사용 및 구매 팁",
+  "타르 깨끗하게 지우는 법",
+  "지하주차장 시멘트물 떨어졌을 때",
+  "하이그로시 내장재 기스 없이 닦기",
+  "효과적으로 고압수 뿌리는 방법",
+  "플라스틱 트림 하얗게 바랬을 때",
+  "여름철 세차 주의사항",
+  "세차 수건 세탁하는 법",
+  "유리막 코팅 차량 관리법",
+  "차량 담배 냄새 완벽 제거법",
+  "스노우폼 뿌리고 대기하는 시간",
+  "하부 세차 꼭 해야 하나요?",
+  "물왁스 바를 때 꿀팁",
+  "초보자가 갖춰야 할 기본 세차 습관",
+  "세차장 공용 거품 솔 써도 되나요?",
+  "프리미엄 세차 순서와 방법"
+];
+
 const callAI = async (contents: any[], systemInstruction: string) => {
   // 모의 지연 시간 (1.5초)
   await new Promise(resolve => setTimeout(resolve, 1500));
@@ -2483,6 +2517,37 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
           ref={scrollRef}
           className="flex-1 bg-[#f5f2e8] rounded-[2.5rem] md:rounded-[3rem] overflow-y-auto p-4 md:p-6 flex flex-col gap-6 md:gap-8 pt-6 md:pt-8 shadow-sm"
         >
+          {chatType === 'ai' && displayMessages.length <= 1 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col gap-4 mb-4"
+            >
+              <div className="flex items-center gap-2 mb-2 px-2">
+                <Sparkles size={18} className="text-[#1ea08a]" />
+                <span className="text-[13px] font-black text-slate-600">자주 묻는 30가지 질문을 터치해보세요!</span>
+              </div>
+              <div className="flex flex-wrap gap-2 px-1">
+                {AI_SUGGESTED_QUESTIONS.map((q, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setInput(q);
+                      // 약간의 지연 후 전송하여 사용자가 입력창에 들어간 걸 볼 수 있게 함
+                      setTimeout(() => {
+                        const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+                        document.dispatchEvent(enterEvent); // (임시 방편) 혹은 그냥 sendMessage 로직 바로 호출
+                      }, 100);
+                    }}
+                    className="bg-white border-2 border-slate-200 text-slate-700 text-[13px] font-bold px-4 py-2.5 rounded-full hover:border-[#1ea08a] hover:text-[#1ea08a] hover:bg-[#1ea08a]/5 transition-all shadow-sm active:scale-95 text-left"
+                  >
+                    {idx + 1}. {q}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
           {displayMessages.map((m, i) => (
             <motion.div 
               key={m.id || i} 
