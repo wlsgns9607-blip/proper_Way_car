@@ -2449,10 +2449,11 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
 
             if (db) {
               const messagesRef = collection(db, 'chatSessions', sessionId, subCol);
-              await addDoc(messagesRef, {
+              // await 제거: 파이어베이스 응답 대기 때문에 무한 로딩 걸리는 현상 완벽 차단
+              addDoc(messagesRef, {
                 ...aiMsg,
                 timestamp: serverTimestamp()
-              });
+              }).catch(err => console.error("AI Msg save error:", err));
             } else {
               setLocalMessages(prev => [...prev, { ...aiMsg, id: 'ai-' + Date.now() }]);
             }
