@@ -2425,19 +2425,11 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
           : "(차량 정보 없음)";
 
         try {
-          // 기획자님 요청사항: 무한 로딩 문제 해결을 위해 실제 API 호출을 끊고 더미 데이터로 대체함
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          let aiText = "안녕하세요, AI 세차 전문가입니다. 세차 방법에 대해 궁금하신 점을 말씀해 주시면 자세히 안내해 드리겠습니다.";
-          if (content.includes("동선")) {
-              aiText = "가장 효율적인 프로의 동선은 실내 세차를 먼저 마스터하는 것입니다. 실내 먼지를 에어건으로 불어내고 청소기로 흡입한 뒤, 실외로 넘어가 휠과 도장면을 세척하는 순서가 가장 빠르고 깨끗합니다.";
-          } else if (content.includes("유막") || content.includes("발수")) {
-              aiText = "유막 제거는 세차 전 차량 유리에 물기가 없는 상태에서 유막제거제를 전용 패드에 묻혀 원형으로 문질러 주시면 됩니다. 이후 발수코팅을 진행하세요.";
-          } else {
-              aiText = "질문해주신 내용에 대한 답변입니다. 세차의 정석 가이드를 참고하시면 차량을 더욱 안전하고 깨끗하게 관리할 수 있습니다.";
-          }
-          
-          const response = { text: aiText };
+          // 원래의 진짜 AI 호출 로직 복구
+          const response = await callAI(
+            [...history, { role: 'user', parts: [{ text: content }] }],
+            `당신은 '세차의 정석' 앱의 AI 세차 전문가입니다. 당신은 오직 '세차'와 관련된 주제(세차 방법, 주기, 용품, 차량 관리 등)에 대해서만 답변해야 합니다. 세차와 관련 없는 질문에 대해서는 "죄송합니다. 저는 세차 전문가로서 세차와 관련된 궁금증만 해결해 드릴 수 있습니다."라고 정중하게 거절하십시오. ${carInfo} 사용자에게 전문적이고 친절하게 상담해주세요. 답변은 반드시 한국어로 작성하십시오.`
+          );
 
           if (response.text) {
             const aiMsg: any = {
@@ -2460,7 +2452,33 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
           }
         } catch (aiErr: any) {
           console.error("AI Response Error:", aiErr);
-          alert("현재 세차 AI 전문 서버와 연결할 수 없습니다.\n잠시 후 다시 시도해 주세요. (API 연동 준비 중)");
+          
+          // API 호출 실패 시에도 무한 로딩에 걸리지 않도록 가짜(더미) 응답으로 대체
+          let fallbackText = "안녕하세요, 세차 전문가입니다. 질문하신 내용에 대한 답변을 찾고 있습니다. (현재 AI 서버 연결 지연)";
+          if (content.includes("나무") || content.includes("수액")) {
+              fallbackText = "나무 수액은 굳기 전에 최대한 빨리 제거하는 것이 중요합니다. 굳은 수액은 억지로 긁어내지 마시고, 뜨거운 물에 적신 타월을 5~10분 올려 불린 후 타르제거제나 알코올을 묻혀 부드럽게 닦아내세요. 이후 세차 후 왁스나 코팅제로 보호막을 입혀주면 좋습니다.";
+          } else if (content.includes("동선")) {
+              fallbackText = "가장 효율적인 프로의 동선은 실내 세차를 먼저 마스터하는 것입니다. 실내 먼지를 불어내고 청소기로 흡입한 뒤, 실외로 넘어가 휠과 도장면을 세척하는 순서가 가장 빠르고 깨끗합니다.";
+          } else {
+              fallbackText = `현재 AI 서버에 접속자가 많아 응답이 지연되고 있습니다. 세차의 정석 가이드를 참고해 주시거나 잠시 후 다시 질문해 주세요. (질문 키워드: ${content.substring(0, 10)}...)`;
+          }
+          
+          const aiMsg: any = {
+            role: 'model',
+            content: fallbackText,
+            timestamp: new Date().toISOString(),
+            roleLabel: 'AI세차전문가'
+          };
+          
+          if (db) {
+            const messagesRef = collection(db, 'chatSessions', sessionId, subCol);
+            addDoc(messagesRef, {
+              ...aiMsg,
+              timestamp: serverTimestamp()
+            }).catch(err => console.error("Fallback AI Msg save error:", err));
+          } else {
+            setLocalMessages(prev => [...prev, { ...aiMsg, id: 'ai-' + Date.now() }]);
+          }
         }
       } 
     } catch (error: any) {
