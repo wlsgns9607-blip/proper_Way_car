@@ -892,7 +892,7 @@ export default function App() {
 
       {/* Global Nav */}
       {state.view !== 'auth' && state.view !== 'home' && !state.view.startsWith('photo_upload') && !state.view.includes('dashboard') && (
-        <nav className="bg-[#f5f0e1] border-t border-slate-200 px-8 py-4 flex justify-between items-center pb-safe-8 md:pb-8 sticky bottom-0 z-50">
+        <nav className="bg-[#f5f0e1] border-t border-slate-200 px-4 md:px-8 py-4 flex justify-between items-center pb-safe-8 md:pb-8 sticky bottom-0 z-50">
           <style dangerouslySetInnerHTML={{ __html: `
             .pb-safe-8 { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
           ` }} />
@@ -2033,7 +2033,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
         )}
 
         {/* Weather & Info */}
-        <motion.div variants={item} className="bg-white rounded-[3.5rem] p-8 md:p-12 shadow-md border border-white/50 mb-10 overflow-hidden">
+        <motion.div variants={item} className="bg-white rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 shadow-md border border-white/50 mb-10 overflow-hidden">
           <div className="flex items-center justify-center gap-3 mb-8">
             <Bell size={24} className="text-slate-800" strokeWidth={2.5}/>
             <h4 className="font-black text-[#3d5a55] text-lg">공지사항 및 미세먼지 농도</h4>
@@ -2197,7 +2197,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
               setState((prev: any) => ({ ...prev, view: 'chat' })); // Force chat view for AI
             }
           }}
-          className="w-full relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] text-white p-7 md:p-9 flex flex-col justify-between shadow-lg transition-all active:scale-[0.98] group mt-2"
+          className="w-full relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] text-white p-5 md:p-9 flex flex-col justify-between shadow-lg transition-all active:scale-[0.98] group mt-2"
         >
           {/* Futuristic background touches */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-[#1ea08a] rounded-full blur-[80px] opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none"></div>
@@ -2209,7 +2209,7 @@ function HomeScreen({ user, setView, onOpenService, setState, state }: { user: U
                  <Sparkles size={16} className="text-[#34d399] animate-pulse" />
                  <span className="text-[11px] font-black tracking-[0.15em] text-[#34d399] uppercase">AI Assistant</span>
                </div>
-               <span className="font-black text-white text-[22px] tracking-tight text-left leading-tight break-keep">AI세차전문가한테<br/>물어보세요!!</span>
+               <span className="font-black text-white text-[18px] sm:text-[22px] tracking-tight text-left leading-tight break-keep">AI세차전문가한테<br/>물어보세요!!</span>
              </div>
 
              <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all shadow-lg shrink-0">
@@ -2481,7 +2481,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
         {/* The Beige Card Container */}
         <div 
           ref={scrollRef}
-          className="flex-1 bg-[#f5f2e8] rounded-[3rem] overflow-y-auto p-6 flex flex-col gap-8 pt-8 shadow-sm"
+          className="flex-1 bg-[#f5f2e8] rounded-[2.5rem] md:rounded-[3rem] overflow-y-auto p-4 md:p-6 flex flex-col gap-6 md:gap-8 pt-6 md:pt-8 shadow-sm"
         >
           {displayMessages.map((m, i) => (
             <motion.div 
@@ -2490,7 +2490,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
               animate={{ opacity: 1, y: 0 }}
               className={`flex flex-col max-w-[90%] ${m.role === 'user' ? 'self-start' : 'self-end'}`}
             >
-              <div className={`p-6 rounded-[2.5rem] shadow-xl relative border-[3px] transition-all ${
+              <div className={`p-4 md:p-6 rounded-[2rem] md:rounded-[2.5rem] shadow-xl relative border-[3px] transition-all ${
                 m.role === 'user' 
                   ? 'bg-[#1e293b] text-white border-transparent' 
                   : 'bg-white/80 text-slate-900 border-black'
@@ -2505,13 +2505,13 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
                     </button>
                  </div>
 
-                 <div className="mb-2 pr-12">
+                 <div className="mb-2 pr-10 md:pr-12">
                    <p className="text-[17px] font-black tracking-tighter">
                      {m.role === 'user' ? (m.roleLabel || '궁금한점') : (m.roleLabel || '실무자의 답변')}
                    </p>
                  </div>
 
-                 <div className="text-[16px] leading-relaxed font-bold mt-2">
+                 <div className="text-[14px] md:text-[16px] leading-relaxed font-bold mt-2">
                    {m.photoUrl && (
                      <div className="mb-4 rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm bg-slate-50">
                        <img src={m.photoUrl} alt="첨부 사진" className="w-full object-cover max-h-80" referrerPolicy="no-referrer" />
@@ -2583,18 +2583,18 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
                   sendMessage();
                 }
               }}
-              className={`w-full bg-${chatType !== 'ai' ? 'white' : '[#f1f1f1]'} border-[3px] border-slate-900 rounded-[2.5rem] py-6 pr-10 ${mode === 'user' ? 'pl-16' : 'px-10'} font-black text-[18px] text-center focus:outline-none shadow-xl placeholder:text-slate-500`}
+              className={`w-full bg-${chatType !== 'ai' ? 'white' : '[#f1f1f1]'} border-[3px] border-slate-900 rounded-[2.5rem] py-4 md:py-6 pr-10 ${mode === 'user' ? 'pl-14 md:pl-16' : 'px-6 md:px-10'} font-black text-[15px] md:text-[18px] text-center focus:outline-none shadow-xl placeholder:text-slate-500`}
             />
           </div>
           <button 
             onClick={sendMessage}
             disabled={isLoading}
-            className={`w-16 h-16 shrink-0 rounded-full bg-[#1ea08a] flex items-center justify-center text-white shadow-2xl active:scale-95 transition-all border-4 border-white ${isLoading ? 'opacity-50' : ''}`}
+            className={`w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-full bg-[#1ea08a] flex items-center justify-center text-white shadow-2xl active:scale-95 transition-all border-4 border-white ${isLoading ? 'opacity-50' : ''}`}
           >
             {isLoading ? (
               <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
             ) : (
-              chatType === 'ai' ? <Send size={30} strokeWidth={2.5} className="ml-1" /> : <Navigation size={30} strokeWidth={2.5} className="-ml-1 mr-1 rotate-45" fill="currentColor" />
+              chatType === 'ai' ? <Send size={24} className="md:w-[30px] md:h-[30px] ml-1" strokeWidth={2.5} /> : <Navigation size={24} className="md:w-[30px] md:h-[30px] -ml-1 mr-1 rotate-45" strokeWidth={2.5} fill="currentColor" />
             )}
           </button>
         </div>

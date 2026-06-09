@@ -235,7 +235,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex-1 overflow-y-auto p-6 lg:p-10 flex flex-col gap-8 pb-20 scroll-smooth"
+        className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 flex flex-col gap-6 md:gap-8 pb-20 scroll-smooth"
       >
         
         {/* 0. Live Badge Preview */}
@@ -247,8 +247,8 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <Award size={80} strokeWidth={1} />
             </div>
-            <div className="flex items-center gap-6">
-              <div className={`w-20 h-20 ${currentBadge.color} rounded-2xl flex items-center justify-center text-4xl shadow-lg border-2 border-white/20`}>
+            <div className="flex items-center gap-4 md:gap-6">
+              <div className={`shrink-0 w-16 h-16 md:w-20 md:h-20 ${currentBadge.color} rounded-2xl flex items-center justify-center text-3xl md:text-4xl shadow-lg border-2 border-white/20`}>
                 {currentBadge.icon}
               </div>
               <div className="flex-1">
@@ -291,13 +291,13 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             </div>
           </div>
           
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-200 relative">
+          <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-5 sm:p-8 shadow-xl border border-slate-200 relative">
             <div className="relative mb-6 text-center">
               <span className="text-[12px] font-black text-slate-700 uppercase tracking-[0.2em] leading-none">품질 (디테일 지수)</span>
             </div>
             
-            <div className="flex items-center gap-6">
-              <div className="flex flex-col justify-between py-10 h-72 text-[11px] font-black text-slate-500">
+            <div className="flex items-center gap-2 md:gap-6">
+              <div className="hidden sm:flex flex-col justify-between py-10 h-72 text-[11px] font-black text-slate-500">
                  <span className="text-emerald-600">꼼꼼함/디테일</span>
                  <span className="text-slate-400">보통</span>
                  <span className="text-slate-400">신속함/보통</span>
@@ -314,10 +314,10 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
                 <div className="absolute inset-y-0 left-1/2 border-l-2 border-dashed border-slate-300" />
                 
                 {/* Labels on Grid */}
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[11px] font-black text-emerald-600/60">최고의 디테일</div>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] font-black text-rose-400/60">신속함 집중</div>
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] font-black text-blue-500/60 rotate-90">조기 종료</div>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-black text-orange-500/60 -rotate-90">지연 완료</div>
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[9px] sm:text-[11px] font-black text-emerald-600/60">최고의 디테일</div>
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[9px] sm:text-[11px] font-black text-rose-400/60">신속함 집중</div>
+                <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-[9px] sm:text-[11px] font-black text-blue-500/60 rotate-90 whitespace-nowrap">조기 종료</div>
+                <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-[9px] sm:text-[11px] font-black text-orange-500/60 -rotate-90 whitespace-nowrap">지연 완료</div>
 
                 {/* The Pin */}
                 {pin && (
@@ -344,7 +344,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-between px-16 text-[12px] font-black text-slate-700 uppercase tracking-[0.2em]">
+            <div className="mt-8 flex justify-between px-2 sm:px-8 md:px-16 text-[10px] sm:text-[12px] font-black text-slate-700 uppercase tracking-[0.1em] sm:tracking-[0.2em]">
               <span className="text-blue-600">조기 종료</span>
               <span className="text-slate-400 hidden md:inline">작업 시간 (시간 준수)</span>
               <span className="text-orange-600">지연</span>
@@ -372,7 +372,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             <h3 className="font-black text-slate-800 text-lg">기대값 vs 실제 작업 시각화</h3>
           </div>
 
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-200 flex flex-col gap-10">
+          <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 shadow-xl border border-slate-200 flex flex-col gap-10">
             {/* Overlapping Time Bar Gauge */}
             <div className="space-y-4 text-center md:text-left">
               <div className="flex justify-between items-end">
@@ -463,7 +463,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             <h3 className="font-black text-slate-800 text-lg">나만의 세차 바이브</h3>
           </div>
           
-          <div className="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-200">
+          <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-5 sm:p-6 shadow-xl border border-slate-200">
             <div className="flex flex-wrap gap-2">
               {vibes.map((vibe, i) => (
                 <button
@@ -495,7 +495,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
             <h3 className="font-black text-slate-800 text-lg">고객님 상세 피드백</h3>
           </div>
           
-          <div className="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-200">
+          <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-5 sm:p-6 shadow-xl border border-slate-200">
             <textarea 
               value={expertComment}
               onChange={(e) => setExpertComment(e.target.value)}
@@ -517,7 +517,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-slate-900 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden group"
+            className="bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden group"
           >
             <motion.div 
               animate={{ rotate: 360 }}
@@ -537,7 +537,7 @@ export function ReviewMatrix({ onBack, user }: ReviewMatrixProps) {
               
               <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10 gap-6">
                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-emerald-400 group-hover:rotate-12 transition-transform">
+                    <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/10 flex items-center justify-center text-emerald-400 group-hover:rotate-12 transition-transform">
                        <CheckCircle2 size={32} />
                     </div>
                     <div className="flex flex-col">
