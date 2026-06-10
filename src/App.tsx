@@ -2604,7 +2604,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
                    </p>
                  </div>
 
-                 <div className="text-[14px] md:text-[16px] leading-relaxed font-bold mt-2">
+                 <div className="text-[14px] md:text-[16px] leading-relaxed font-bold mt-2 pb-8">
                    {m.photoUrl && (
                      <div className="mb-4 rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm bg-slate-50">
                        <img src={m.photoUrl} alt="첨부 사진" className="w-full object-cover max-h-80" referrerPolicy="no-referrer" />
@@ -2614,7 +2614,7 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
                  </div>
 
                  {/* X Icon at Bottom Right */}
-                 <div className="absolute right-6 bottom-4 flex items-center gap-2">
+                 <div className="absolute right-3 bottom-3 md:right-5 md:bottom-4 flex items-center gap-2">
                     {m.role === 'user' && user?.email === 'wlsgns9607@gmail.com' && chatType === 'expert' && (
                        <button 
                          onClick={onPhoto}
@@ -2623,14 +2623,23 @@ function ChatScreen({ user, onBack, onPhoto, onPhotoSelect, title = "궁금하�
                          답변하기
                        </button>
                     )}
-                    <X 
-                      size={24} 
-                      className="cursor-pointer opacity-40 hover:opacity-100 transition-opacity" 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteMessage(m.id);
                       }}
-                    />
+                      className={`p-1.5 rounded-full backdrop-blur-sm transition-all ${
+                        m.role === 'user' 
+                          ? 'bg-black/20 hover:bg-black/40' 
+                          : 'bg-black/5 hover:bg-black/10'
+                      }`}
+                    >
+                      <X 
+                        size={20} 
+                        color={m.role === 'user' ? '#ffffff' : '#64748b'}
+                        className="cursor-pointer opacity-100" 
+                      />
+                    </button>
                  </div>
               </div>
             </motion.div>
