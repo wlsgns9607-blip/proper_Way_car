@@ -1,39 +1,32 @@
 # 세차의 정석 (The Art of Car Wash) 🧼✨
 
-**세차의 정석**은 프리미엄 차량 관리에 대한 UI/UX 혁신을 목표로 개발된 **AI 기반 하이엔드 서비스 구축 프로젝트**입니다. 단순한 세차 정보 제공을 넘어, AI 비전 분석, 전문가 실시간 매칭, 데이터 기반의 정량적 리포트 시스템을 한데 모아 직접 반응형 웹 UI와 코드로 구축한 통합 웹 플랫폼입니다.
+**세차의 정석**은 프리미엄 차량 관리를 위해 구현된 **AI 기반 하이엔드 서비스 구축 프로젝트**입니다. 
+AI 비전 분석, 실시간 데이터 기반 세차 지수 대시보드, 2D 매트릭스 리포트 UI를 반응형 웹 코드로 직접 구축했습니다.
 
 ---
 
-## 🎨 Design Identity & UX Strategy
-
-본 프로젝트는 사용자에게 신뢰감과 전문성을 전달하기 위해 다음과 같은 UI/UX 원칙을 준수하여 마크업 및 스타일링을 진행했습니다.
-
-- **Deep Slate & Emerald Palette**: 전문성과 청결함을 상징하는 딥 슬레이트와 에메랄드 그린 컬러를 메인 테마로 채택하여 세련된 인터페이스를 구축했습니다.
-- **Micro-Interactions**: 모든 뷰 전환 및 버튼 인터랙션에 `Framer Motion`을 적용하여 리드미컬하고 매끄러운 유저 경험(App-like Experience)을 제공합니다.
-- **Adaptive Layout**: 모바일 웹 환경에 최적화된 하단 탭 내비게이션과 카드 UI를 통해 한 손 조작 편의성을 극대화했습니다.
-
----
-
-## 🚀 Key Features (Core Functionalities & Implementation)
+## 🚀 구현 완료 핵심 기능 (Implemented Live Features)
 
 ### 1. 지능형 실시간 세차 지수 (Wash Index)
-- OpenWeather 및 미세먼지 API 데이터를 실시간 대조 가공하여, 향후 48시간 내 최적의 세차 타이밍을 0~90% 수치로 가시화하는 UI 대시보드를 구축했습니다.
+- OpenWeather 및 미세먼지 API 데이터를 수신하여, 향후 48시간 내 최적의 세차 타이밍을 가시화하는 대시보드 UI 구현.
 
-### 2. 하이브리드 AI 도슨트 시스템
-- **AI Vision Analysis**: `Google Gemini 1.5 Flash` 모델을 연동하여, 사용자가 업로드한 차량 사진을 실시간 분석하고 도장면 상태에 따른 맞춤형 도구를 추천하는 UI/UX를 구현했습니다.
-- **Expert Live Chat**: Firebase SDK를 이용한 실시간 데이터 스트리밍으로 현장 전문가와 1:1 상담 세션을 유지하는 인터랙션을 개발했습니다.
+### 2. 하이브리드 AI 도슨트 & 실시간 UI
+- **AI Vision Analysis**: 사용자가 업로드한 차량 사진을 Gemini API로 전달하여 도장면 상태 분석 결과를 가시화하는 UI 구현.
+- **Expert Live Chat UI**: Firebase SDK 연동으로 현장 전문가와 1:1 상담이 가능한 실시간 채팅 인터페이스 구축.
 
-### 3. 고속 위치 기반 탐색 (Quick Location Service)
-- **Searching Splash UX**: 기기 GPS와 통신하는 찰나의 대기 시간을 감각적인 애니메이션 스플래시로 처리하여 지루함을 최소화했습니다.
-- **Native Map Deep-link**: 사용자 선택에 따라 네이버 지도 혹은 카카오 맵 앱으로 직접 좌표 정보를 전달하여 즉각적인 길 안내를 지원합니다.
+### 3. 위치 기반 지도 연동 (Location Service)
+- 기기 GPS(`navigator.geolocation`) 데이터를 수신하여, 사용자가 네이버 지도 / 카카오 맵 딥링크(Deep-link)로 즉시 전환되는 위치 안내 UI 마크업.
 
-### 4. 정량적 세차 품질 검증 (Matrix Report)
-- **2D Matrix UI**: 세차 품질(세밀함)과 소요 시간을 2축 좌표계로 시각화하여, 서비스 만족도를 데이터 중심으로 평가합니다.
-- **Automated AI Summary**: 수집된 평가 데이터를 바탕으로 AI가 핵심 인사이트를 요약하여 리포트를 발행합니다.
-
-### 5. 마스터 관리 대시보드 (Admin Dashboard)
-- **RBAC (Role-Based Access Control)**: 특정 관리자 계정(`wlsgns9607@gmail.com`)에만 활성화되는 전용 대시보드를 통해 실시간 상담 현황과 리뷰 데이터를 통합 모니터링할 수 있도록 레이아웃을 분기 처리했습니다.
-
+### 4. 정량적 세차 품질 검증 (Matrix Report UI)
+- 세차 품질과 소요 시간을 2축 좌표계로 시각화한 2D Matrix UI 및 AI 요약 리포트 레이아웃 구축.
 
 ---
 
+## 💡 추후 비즈니스 확장 로드맵 (Future Roadmap)
+
+> **"비즈니스 생태계 확장 및 오프라인 대기 시간 축소(Time-Reduction)를 위한 차세대 기획"**
+
+* **차량 인포테인먼트(Android Auto / CarPlay) UI 확장**
+  * 모바일 레이아웃을 넘어 차량 디스플레이 규격(Big Button UI)으로 인터페이스를 확장하여 운전석 내 결제 및 지오펜싱(Geofencing) 무인 체크인 UI 구축 예정.
+* **서울 주요 거점 중심 선결제 인프라 연동**
+  * 현장 대기 시간을 최소화하는 서울 주요 세차장 거점 결제 시스템 연동 계획.
